@@ -8,10 +8,10 @@ Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
 ```javascript
 var x2j = require('rapidx2j');
-var json = x2j.parse(xml_string) {
-    console.log(json);
-});
+var json = x2j.parse(xml_string);
+console.log(json);
 ```
+
 ## Supported Node versions
 
  * node 0.12.x
