@@ -114,7 +114,10 @@ NAN_METHOD(Parse)
     NanReturnUndefined();
   }
 
-  v8::Local<v8::Value> obj = walk(doc.first_node());
-
-  NanReturnValue(obj);
+  if (doc.first_node())
+  {
+    v8::Local<v8::Value> obj = walk(doc.first_node());
+    NanReturnValue(obj);
+  }
+  NanReturnUndefined();
 }
