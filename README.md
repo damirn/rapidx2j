@@ -12,6 +12,17 @@ var json = x2j.parse(xml_string);
 console.log(json);
 ```
 
+Or with optional config object:
+
+```javascript
+var x2j = require('rapidx2j');
+var json = x2j.parse(xml_string, { empty_tag_value: null });
+console.log(json);
+```
+
+Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
+(i.e. to 'null' in this case).
+
 ## Supported Node versions
 
  * node 0.12.x
