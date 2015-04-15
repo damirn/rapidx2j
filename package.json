@@ -1,9 +1,9 @@
 {
   "name": "rapidx2j",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js XML to JSON using rapidXML",
   "main": "index.js",
-  "private": true,
+  "private": false,
   "gypfile": true,
   "files": [
     "src",
@@ -13,5 +13,29 @@
   ],
   "dependencies": {
     "nan": "*"
-  }
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/damirn/rapidx2j.git"
+  },
+  "keywords": [
+    "rapidxml",
+    "xml",
+    "json",
+    "parsing",
+    "addon"
+  ],
+  "author": "Damir Nedžibović <damirn@gmail.com>",
+  "license": "MIT or Boost Software License",
+  "bugs": {
+    "url": "https://github.com/damirn/rapidx2j/issues"
+  },
+  "homepage": "https://github.com/damirn/rapidx2j"
 }

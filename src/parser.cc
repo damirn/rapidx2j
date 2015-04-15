@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <string>
 
+static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
+
 static std::string trim(const std::string &s)
 {
   size_t first = s.find_first_not_of(" \t\n\r");
@@ -39,7 +41,7 @@ static v8::Local<v8::Value> parseText(const std::string &text)
 
 static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
 {
-  v8::Local<v8::Value> ret = NanNew<v8::Boolean>(true); // default value
+  v8::Local<v8::Value> ret = gEmptyTagValue;
   int len = 0;
   std::string collected = "";
 
@@ -102,6 +104,21 @@ NAN_METHOD(Parse)
     NanThrowError("Wrong number of arguments");
     NanReturnUndefined();
   }
+  if (args.Length() == 2)
+  {
+    if (!args[1]->IsObject())
+    {
+      NanThrowError("Wrong argument; expected Object");
+      NanReturnUndefined();
+    }
+    else
+    {
+      v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
+      gEmptyTagValue = tmp->Get(NanNew<v8::String>("empty_tag_value"));
+    }
+  }
+  else
+    gEmptyTagValue = NanNew<v8::Boolean>(true);
 
   NanUtf8String xml(args[0]);
   rapidxml::xml_document<char> doc;
