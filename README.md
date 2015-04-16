@@ -25,6 +25,7 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
 
 ## Supported Node versions
 
+ * node 0.10.x
  * node 0.12.x
 
 ## License & copyright
