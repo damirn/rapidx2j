@@ -3,6 +3,6 @@
 
 #include <nan.h>
 
-NAN_METHOD(Parse);
+NAN_METHOD(parse);
 
 #endif  // RAPIDXML_NODEJS_H_

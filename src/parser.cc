@@ -95,7 +95,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   return ret;
 }
 
-NAN_METHOD(Parse)
+NAN_METHOD(parse)
 {
   NanScope();
 
