@@ -47,6 +47,18 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
 
   // handle attributes here
 
+  if (node->first_attribute())
+  {
+    ret = NanNew<v8::Object>();
+    for (const rapidxml::xml_attribute<> *a = node->first_attribute(); a; a = a->next_attribute())
+    {
+      ++len;
+      std::string tmp("@" + std::string(a->name()));
+      toLower(tmp);
+      v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>(tmp), parseText(trim(std::string(a->value()))));
+    }
+  }
+
   for (const rapidxml::xml_node<> *n = node->first_node(); n; n = n->next_sibling())
   {
     const rapidxml::node_type t = n->type();
@@ -90,7 +102,12 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     }
   }
   if (collected.length() > 0)
-    ret = parseText(collected);
+  {
+    if (len > 0)
+      v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>("keyValue"), parseText(collected));
+    else
+      ret = parseText(collected);
+  }
 
   return ret;
 }
