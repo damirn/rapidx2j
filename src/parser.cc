@@ -6,6 +6,7 @@
 #include <string>
 
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
+static bool gParseDouble = true;
 
 static std::string trim(const std::string &s)
 {
@@ -32,9 +33,18 @@ static v8::Local<v8::Value> parseText(const std::string &text)
     return NanNew<v8::Boolean>(false);
 
   char *c = const_cast<char *>(text.c_str());
-  double d = ::strtod(text.c_str(), &c);
-  if (*c == '\0')
-    return NanNew<v8::Number>(d);
+  if (gParseDouble)
+  {
+    double d = ::strtod(text.c_str(), &c);
+    if (*c == '\0')
+      return NanNew<v8::Number>(d);
+  }
+  else
+  {
+    long l = ::strtol(text.c_str(), &c, 10);
+    if (!(text.c_str() == c || *c != '\0' || ((l == LONG_MIN || l == LONG_MAX) && errno == ERANGE)))
+      return NanNew<v8::Number>(l);
+  }
 
   return NanNew<v8::String>(text);
 }
@@ -88,9 +98,8 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
           v8::Local<v8::Array> a = NanNew<v8::Array>();
           a->Set(0, myret->Get(key));
           myret->Set(key, a);
-          arr = a; // check this
+          arr = a;
         }
-//        arr = myret->Get(key);
         v8::Local<v8::Array> a = v8::Local<v8::Array>::Cast(arr);
         a->Set(a->Length(), obj);
       }
@@ -132,6 +141,7 @@ NAN_METHOD(parse)
     {
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
       gEmptyTagValue = tmp->Get(NanNew<v8::String>("empty_tag_value"));
+      gParseDouble = tmp->Get(NanNew<v8::String>("parse_float_numbers"))->BooleanValue();
     }
   }
   else
