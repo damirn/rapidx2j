@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <errno.h>
 #include <string>
 
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
