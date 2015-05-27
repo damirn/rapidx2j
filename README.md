@@ -16,12 +16,19 @@ Or with optional config object:
 
 ```javascript
 var x2j = require('rapidx2j');
-var json = x2j.parse(xml_string, { empty_tag_value: null });
+var options = {
+  empty_tag_value: null,
+  parse_int_numbers: true,
+  parse_float_numbers: true,
+  skip_parse_when_begins_with: ''  
+};
+var json = x2j.parse(xml_string, options);
 console.log(json);
 ```
 
 Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
 (i.e. to 'null' in this case).
+'parse_int_numbers' and 'parse_float_numbers' will or will not parse int/float number to appropriate java script types.
 
 ## Supported Node versions
 
