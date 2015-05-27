@@ -3,11 +3,13 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <errno.h>
 #include <string>
+#include <errno.h>
 
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
-static bool gParseDouble = true;
+static bool gParseDouble;
+static bool gParseInteger;
+static std::string gBeginsWith;
 
 static std::string trim(const std::string &s)
 {
@@ -33,6 +35,9 @@ static v8::Local<v8::Value> parseText(const std::string &text)
   else if (tmp == "false")
     return NanNew<v8::Boolean>(false);
 
+  if (gBeginsWith.length() > 0 && text.find_first_of(gBeginsWith) == 0)
+    return NanNew<v8::String>(text);
+
   char *c = const_cast<char *>(text.c_str());
   if (gParseDouble)
   {
@@ -40,7 +45,7 @@ static v8::Local<v8::Value> parseText(const std::string &text)
     if (*c == '\0')
       return NanNew<v8::Number>(d);
   }
-  else
+  else if (gParseInteger)
   {
     long l = ::strtol(text.c_str(), &c, 10);
     if (!(text.c_str() == c || *c != '\0' || ((l == LONG_MIN || l == LONG_MAX) && errno == ERANGE)))
@@ -74,13 +79,9 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   {
     const rapidxml::node_type t = n->type();
     if (t == rapidxml::node_data)
-    {
       collected += trim(std::string(node->value()));
-    }
     else if (t == rapidxml::node_cdata)
-    {
       collected += std::string(node->value());
-    }
     else if (t == rapidxml::node_element)
     {
       if (len == 0)
@@ -143,10 +144,18 @@ NAN_METHOD(parse)
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
       gEmptyTagValue = tmp->Get(NanNew<v8::String>("empty_tag_value"));
       gParseDouble = tmp->Get(NanNew<v8::String>("parse_float_numbers"))->BooleanValue();
+      gParseInteger = tmp->Get(NanNew<v8::String>("parse_int_numbers"))->BooleanValue();
+      v8::String::Utf8Value s(tmp->Get(NanNew<v8::String>("skip_parse_when_begins_with"))->ToString());
+      gBeginsWith = *s;
     }
   }
   else
+  {
     gEmptyTagValue = NanNew<v8::Boolean>(true);
+    gParseDouble = true;
+    gParseInteger = true;
+    gBeginsWith = "";
+  }
 
   NanUtf8String xml(args[0]);
   rapidxml::xml_document<char> doc;
