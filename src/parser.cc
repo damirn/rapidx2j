@@ -81,7 +81,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     if (t == rapidxml::node_data)
       collected += trim(std::string(node->value()));
     else if (t == rapidxml::node_cdata)
-      collected += std::string(node->value());
+      collected += std::string(node->first_node()->value());
     else if (t == rapidxml::node_element)
     {
       if (len == 0)
