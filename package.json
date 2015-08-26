@@ -1,6 +1,6 @@
 {
   "name": "rapidx2j",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Node.js XML to JSON using rapidXML",
   "main": "index.js",
   "private": false,
@@ -12,7 +12,7 @@
     "package.json"
   ],
   "dependencies": {
-    "nan": "*"
+    "nan": "<=1.9.x"
   },
   "scripts": {
     "install": "node-gyp rebuild"
