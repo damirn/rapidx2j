@@ -14,6 +14,8 @@ static std::string gBeginsWith;
 static std::string trim(const std::string &s)
 {
   size_t first = s.find_first_not_of(" \t\n\r");
+  if (first == std::string::npos)
+    return std::string("");
   size_t last = s.find_last_not_of(" \t\n\r");
   return s.substr(first, (last - first + 1));
 }
