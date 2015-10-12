@@ -6,6 +6,10 @@ Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
 ## Usage
 
+`x2j.parse(xml_string[, options[, callback]]);`
+
+#### Sync
+
 ```javascript
 var x2j = require('rapidx2j');
 var json = x2j.parse(xml_string);
@@ -24,6 +28,16 @@ var options = {
 };
 var json = x2j.parse(xml_string, options);
 console.log(json);
+```
+
+#### Async with callback
+
+```javascript
+var x2j = require('rapidx2j');
+var json = x2j.parse(xml_string, null, function(err, json) {
+  if (!err)
+    console.log(json);
+});
 ```
 
 Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
