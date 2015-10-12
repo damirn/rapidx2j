@@ -3,7 +3,7 @@ var native = require('./build/Release/rapidx2j');
 exports.parse = function(xml, options, cb) {
   
   // Parse options
-  if (typeof options !== 'object')
+  if (!(options && options.constructor && options.constuctor.name == 'Object'))
     options = {};
   if (typeof options.empty_tag_value !== 'boolean')
     options.empty_tag_value = true;
