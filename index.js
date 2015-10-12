@@ -25,7 +25,6 @@ exports.parse = function(xml, options, cb) {
       }
     });
   }
-  
   // Sync response
   else { 
     var result = native.parse(xml, options);
