@@ -4,7 +4,32 @@ Node.JS module for converting XML documents into JSON objects. It should be one
 of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/).
 Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
+## Installation
+
+`npm install --save rapidx2j`
+
+If your `gyp` is out of date, you might run into the following error:
+
+```
+gyp_main.py: error: no such option: --no-parallel
+```
+
+Either update to the latest `gyp` or edit your `node_gyp` and comment out `argv.push('--no-parallel')`, e.g.:
+`nano /usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/configure.js`
+
+```
+    argv.push('-Dvisibility=default')
+    argv.push('-Dnode_root_dir=' + nodeDir)
+    argv.push('-Dmodule_root_dir=' + process.cwd())
+    argv.push('--depth=.')
+    //argv.push('--no-parallel')
+```
+
 ## Usage
+
+`x2j.parse(xml_string[, options[, callback]]);`
+
+#### Sync
 
 ```javascript
 var x2j = require('rapidx2j');
@@ -24,6 +49,16 @@ var options = {
 };
 var json = x2j.parse(xml_string, options);
 console.log(json);
+```
+
+#### Async with callback
+
+```javascript
+var x2j = require('rapidx2j');
+var json = x2j.parse(xml_string, null, function(err, json) {
+  if (!err)
+    console.log(json);
+});
 ```
 
 Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
