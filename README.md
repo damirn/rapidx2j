@@ -4,6 +4,10 @@ Node.JS module for converting XML documents into JSON objects. It should be one
 of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/).
 Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
+## Installation
+
+`npm install --save rapidx2j`
+
 ## Usage
 
 `x2j.parse(xml_string[, options[, callback]]);`
