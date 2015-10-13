@@ -4,7 +4,15 @@ Node.JS module for converting XML documents into JSON objects. It should be one
 of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/).
 Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
+## Installation
+
+`npm install --save rapidx2j`
+
 ## Usage
+
+`x2j.parse(xml_string[, options][, callback]);`
+
+#### Sync
 
 ```javascript
 var x2j = require('rapidx2j');
@@ -12,7 +20,7 @@ var json = x2j.parse(xml_string);
 console.log(json);
 ```
 
-Or with optional config object:
+#### Sync with optional config object:
 
 ```javascript
 var x2j = require('rapidx2j');
@@ -26,6 +34,16 @@ var json = x2j.parse(xml_string, options);
 console.log(json);
 ```
 
+#### Async with callback
+
+```javascript
+var x2j = require('rapidx2j');
+var json = x2j.parse(xml_string, function(err, json) {
+  if (!err)
+    console.log(json);
+});
+```
+
 Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
 (i.e. to 'null' in this case).
 'parse_int_numbers' and 'parse_float_numbers' will or will not parse XML values which are int/float numbers to appropriate java script types.
@@ -34,6 +52,11 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
 
  * node 0.10.x
  * node 0.12.x
+
+## Contributors
+
+* Damir Nedžibović ([@Damirn](https://github.com/damirn))
+* Sander Steenhuis ([@Redsandro](https://twitter.com/Redsandro))
 
 ## License & copyright
 
