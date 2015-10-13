@@ -77,7 +77,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
       v8::Local<v8::Value> attr = parseText(trim(std::string(a->value())));
       if (attr == NanNull())
       {
-		v8::Local<v8::Value> at = gEmptyAttrValue;
+        v8::Local<v8::Value> at = gEmptyAttrValue;
         v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>(tmp), at);
       }
       else
