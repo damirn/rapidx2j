@@ -151,8 +151,14 @@ static bool parseArgs(_NAN_METHOD_ARGS)
         gEmptyTagValue = NanNew<v8::Boolean>(true);
       else
         gEmptyTagValue = tmp->Get(NanNew<v8::String>("empty_tag_value"));
-      gParseDouble = tmp->Get(NanNew<v8::String>("parse_float_numbers"))->BooleanValue();
-      gParseInteger = tmp->Get(NanNew<v8::String>("parse_int_numbers"))->BooleanValue();
+      if (tmp->HasOwnProperty(NanNew<v8::String>("parse_float_numbers")))
+        gParseDouble = tmp->Get(NanNew<v8::String>("parse_float_numbers"))->BooleanValue();
+      else
+        gParseDouble = true;
+      if (tmp->HasOwnProperty(NanNew<v8::String>("parse_int_numbers")))
+        gParseInteger = tmp->Get(NanNew<v8::String>("parse_int_numbers"))->BooleanValue();
+      else
+        gParseInteger = true;
       v8::String::Utf8Value s(tmp->Get(NanNew<v8::String>("skip_parse_when_begins_with"))->ToString());
       gBeginsWith = *s;
     }
