@@ -125,7 +125,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   return ret;
 }
 
-static bool parseArgs(const v8::FunctionCallbackInfo<v8::Value> &args)
+static bool parseArgs(_NAN_METHOD_ARGS)
 {
   if (args.Length() < 1)
   {
