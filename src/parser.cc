@@ -74,6 +74,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     {
       ++len;
       std::string tmp(gAttrKey + std::string(a->name()));
+      toLower(tmp); //TODO: Add option. This is undesirable. Removing data should not be the default. 
       v8::Local<v8::Value> attr = parseText(trim(std::string(a->value())));
       if (attr == NanNull())
       {
@@ -99,7 +100,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
       if (len == 0)
         ret = NanNew<v8::Object>();
       std::string prop = n->name();
-      toLower(prop);
+      toLower(prop); //TODO: Add option. This is undesirable. Removing data should not be the default. 
       v8::Local<v8::Value> obj = walk(n);
       v8::Local<v8::Object> myret = v8::Local<v8::Object>::Cast(ret);
 
