@@ -6,7 +6,9 @@
 #include <string>
 #include <errno.h>
 
+static std::string gAttrKey; // default string for prepending attribute keys
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
+static v8::Local<v8::Value> gEmptyAttrValue; // default value for empty attributes
 static bool gParseDouble;
 static bool gParseInteger;
 static std::string gBeginsWith;
@@ -71,9 +73,17 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     for (const rapidxml::xml_attribute<> *a = node->first_attribute(); a; a = a->next_attribute())
     {
       ++len;
-      std::string tmp("@" + std::string(a->name()));
-      toLower(tmp);
-      v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>(tmp), parseText(trim(std::string(a->value()))));
+      std::string tmp(gAttrKey + std::string(a->name()));
+      v8::Local<v8::Value> attr = parseText(trim(std::string(a->value())));
+      if (attr == NanNull())
+      {
+		v8::Local<v8::Value> at = gEmptyAttrValue;
+        v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>(tmp), at);
+      }
+      else
+      {
+        v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>(tmp), attr);
+      }
     }
   }
 
@@ -147,10 +157,16 @@ static bool parseArgs(_NAN_METHOD_ARGS)
     else
     {
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
+      v8::String::Utf8Value a(tmp->Get(NanNew<v8::String>("attr_key"))->ToString());
+      gAttrKey = *a;
       if (!tmp->HasOwnProperty(NanNew<v8::String>("empty_tag_value")))
         gEmptyTagValue = NanNew<v8::Boolean>(true);
       else
         gEmptyTagValue = tmp->Get(NanNew<v8::String>("empty_tag_value"));
+      if (!tmp->HasOwnProperty(NanNew<v8::String>("empty_attr_value")))
+        gEmptyAttrValue = NanNew<v8::Boolean>(true);
+      else
+        gEmptyAttrValue = tmp->Get(NanNew<v8::String>("empty_attr_value"));
       if (tmp->HasOwnProperty(NanNew<v8::String>("parse_float_numbers")))
         gParseDouble = tmp->Get(NanNew<v8::String>("parse_float_numbers"))->BooleanValue();
       else
@@ -165,7 +181,9 @@ static bool parseArgs(_NAN_METHOD_ARGS)
   }
   else
   {
+    gAttrKey = "@";
     gEmptyTagValue = NanNew<v8::Boolean>(true);
+    gEmptyAttrValue = NanNew<v8::Boolean>(true);
     gParseDouble = true;
     gParseInteger = true;
     gBeginsWith = "";
