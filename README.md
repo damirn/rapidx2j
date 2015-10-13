@@ -72,7 +72,7 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
 
 ## Contributors
 
-* Damir Nedžibović ([@Darmirn](https://github.com/damirn))
+* Damir Nedžibović ([@Damirn](https://github.com/damirn))
 * Sander Steenhuis ([@Redsandro](https://twitter.com/Redsandro))
 
 ## License & copyright
