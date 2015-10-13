@@ -1,7 +1,9 @@
 var native = require('./build/Release/rapidx2j');
 
 const default_options = {
+  attr_key: '@', 
   empty_tag_value: true, 
+  empty_attr_value: '', 
   parse_int_numbers: true, 
   parse_float_numbers: true, 
   skip_parse_when_begins_with: ''
@@ -43,9 +45,15 @@ exports.parse = function() {
   // Options needs to be any `object` except not `null`
   if (!options || typeof options === 'undefined')
     options = {};
+  // Prepend string for attributes needs to be string
+  if (typeof options.attr_key !== 'string')
+    options.attr_key = default_options.attr_key;
   // `empty_tag_value` can be anything including `undefined`, but not being defined uses default
   if (!options.hasOwnProperty('empty_tag_value'))
     options.empty_tag_value = default_options.empty_tag_value;
+  // `empty_attr_value` can be anything including `undefined`
+  if (!options.hasOwnProperty('empty_attr_value'))
+    options.empty_attr_value = default_options.empty_attr_value;
   // Parse numbers
   if (typeof options.parse_int_numbers !== 'boolean')
     options.parse_int_numbers = default_options.parse_int_numbers;
