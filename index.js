@@ -36,15 +36,23 @@ exports.parse = function() {
   if (typeof args[0] == 'function')
     callback = args.shift();
 
-  // Parse options
+  /*
+   * Parse options
+   */
+
+  // Options needs to be any `object` except not `null`
   if (!options || typeof options === 'undefined')
     options = {};
-  if (typeof options.empty_tag_value !== 'undefined')
+  // `empty_tag_value` can be anything including `undefined`, but not being defined uses default
+  if (!options.hasOwnProperty('empty_tag_value'))
     options.empty_tag_value = default_options.empty_tag_value;
+  // Parse numbers
   if (typeof options.parse_int_numbers !== 'boolean')
     options.parse_int_numbers = default_options.parse_int_numbers;
+  // Parse numbers
   if (typeof options.parse_float_numbers !== 'boolean')
     options.parse_float_numbers = default_options.parse_float_numbers;
+  // Skip these tags for a speedup
   if (typeof options.skip_parse_when_begins_with !== 'string')
     options.skip_parse_when_begins_with = default_options.skip_parse_when_begins_with;
 
