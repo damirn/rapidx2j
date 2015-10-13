@@ -1,6 +1,11 @@
 var native = require('./build/Release/rapidx2j');
 
-const default_options = { empty_tag_value: true, parse_int_numbers: true, parse_float_numbers: true, skip_parse_when_begins_with: '' };
+const default_options = {
+  empty_tag_value: true, 
+  parse_int_numbers: true, 
+  parse_float_numbers: true, 
+  skip_parse_when_begins_with: ''
+};
 
 /**
  * Process options and call RapidXML
@@ -34,7 +39,7 @@ exports.parse = function() {
   // Parse options
   if (!options || typeof options === 'undefined')
     options = {};
-  if (typeof options.empty_tag_value !== 'boolean')
+  if (typeof options.empty_tag_value !== 'undefined')
     options.empty_tag_value = default_options.empty_tag_value;
   if (typeof options.parse_int_numbers !== 'boolean')
     options.parse_int_numbers = default_options.parse_int_numbers;
