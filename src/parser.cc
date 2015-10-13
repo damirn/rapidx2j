@@ -125,21 +125,24 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   return ret;
 }
 
-NAN_METHOD(parse)
+static bool parseArgs(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
-  NanScope();
-
   if (args.Length() < 1)
   {
     NanThrowError("Wrong number of arguments");
-    NanReturnUndefined();
+    return false;
   }
-  if (args.Length() == 2)
+  if (args.Length() >= 2)
   {
+    if (!args[0]->IsString())
+    {
+      NanThrowError("Wrong argument; expected String");
+      return false;
+    }
     if (!args[1]->IsObject())
     {
       NanThrowError("Wrong argument; expected Object");
-      NanReturnUndefined();
+      return false;
     }
     else
     {
@@ -158,6 +161,15 @@ NAN_METHOD(parse)
     gParseInteger = true;
     gBeginsWith = "";
   }
+  return true;
+}
+
+NAN_METHOD(parse)
+{
+  NanScope();
+
+  if (!parseArgs(args))
+    NanReturnUndefined();
 
   NanUtf8String xml(args[0]);
   rapidxml::xml_document<char> doc;
@@ -165,7 +177,7 @@ NAN_METHOD(parse)
   {
     doc.parse<0>(*xml);
   }
-  catch (rapidxml::parse_error &e)
+  catch (rapidxml::parse_error &)
   {
     NanReturnUndefined();
   }
@@ -175,5 +187,77 @@ NAN_METHOD(parse)
     v8::Local<v8::Value> obj = walk(doc.first_node());
     NanReturnValue(obj);
   }
+
+  NanReturnUndefined();
+}
+
+class AsyncParser : public NanAsyncWorker
+{
+public:
+  AsyncParser(NanCallback *callback, NanUtf8String *xml)
+  : NanAsyncWorker(callback)
+  , m_xml(xml)
+  {}
+
+  ~AsyncParser()
+  {
+    delete m_xml;
+  }
+
+  virtual void Execute()
+  {
+    try
+    {
+      m_doc.parse<0>(**m_xml);
+    }
+    catch (rapidxml::parse_error &e)
+    {
+      SetErrorMessage(e.what());
+    }
+  }
+
+  virtual void HandleOKCallback()
+  {
+    NanScope();
+
+    v8::Local<v8::Value> val = NanUndefined();
+    if (m_doc.first_node())
+      val = walk(m_doc.first_node());
+
+    v8::Local<v8::Value> argv[] = 
+    {
+      NanNull(),
+      val
+    };
+    callback->Call(2, argv);
+  }
+
+private:
+  NanUtf8String *m_xml;
+  rapidxml::xml_document<char> m_doc;
+  v8::Local<v8::Value> m_result;
+};
+
+NAN_METHOD(parseAsync)
+{
+  NanScope();
+
+  if (!parseArgs(args))
+    NanReturnUndefined();
+
+  if (args.Length() != 3) // xml string, options object, callback
+  {
+    NanThrowError("Invalid number of arguments");
+    NanReturnUndefined();
+  }
+  if (!args[2]->IsFunction())
+  {
+    NanThrowError("Invalid argument; expected Function");
+    NanReturnUndefined();
+  }
+  NanUtf8String *xml = new NanUtf8String(args[0]);
+  NanCallback *cb = new NanCallback(args[2].As<v8::Function>());
+  NanAsyncQueueWorker(new AsyncParser(cb, xml));
+
   NanReturnUndefined();
 }
