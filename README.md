@@ -8,23 +8,6 @@ Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
 `npm install --save rapidx2j`
 
-If your `gyp` is out of date, you might run into the following error:
-
-```
-gyp_main.py: error: no such option: --no-parallel
-```
-
-Either update to the latest `gyp` or edit your `node_gyp` and comment out `argv.push('--no-parallel')`, e.g.:
-`nano /usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/configure.js`
-
-```
-    argv.push('-Dvisibility=default')
-    argv.push('-Dnode_root_dir=' + nodeDir)
-    argv.push('-Dmodule_root_dir=' + process.cwd())
-    argv.push('--depth=.')
-    //argv.push('--no-parallel')
-```
-
 ## Usage
 
 `x2j.parse(xml_string[, options][, callback]);`
