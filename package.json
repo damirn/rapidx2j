@@ -12,7 +12,8 @@
     "package.json"
   ],
   "dependencies": {
-    "nan": "<=1.9.x"
+    "cmake-js": "^3.0.0",
+    "nan": "^2.2.0"
   },
   "scripts": {
     "install": "node-gyp rebuild"
@@ -33,7 +34,7 @@
     "addon"
   ],
   "author": "Damir Nedžibović <damirn@gmail.com>",
-  "license": "MIT or Boost Software License",
+  "license": "MIT OR BSL-1.0",
   "bugs": {
     "url": "https://github.com/damirn/rapidx2j/issues"
   },
