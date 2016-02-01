@@ -5,6 +5,9 @@
   "main": "index.js",
   "private": false,
   "gypfile": true,
+  "scripts": {
+    "install": "cmake-js compile"
+  },
   "files": [
     "src",
     "binding.gyp",
