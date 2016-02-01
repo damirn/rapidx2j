@@ -2,8 +2,8 @@
 
 void InitAll(v8::Handle<v8::Object> exports)
 {
-  exports->Set(NanNew<v8::String>("parse"), NanNew<v8::FunctionTemplate>(parse)->GetFunction());
-  exports->Set(NanNew<v8::String>("parseAsync"), NanNew<v8::FunctionTemplate>(parseAsync)->GetFunction());
+  exports->Set(Nan::New<v8::String>("parse").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(parse)->GetFunction());
+  exports->Set(Nan::New<v8::String>("parseAsync").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(parseAsync)->GetFunction());
 }
 
 NODE_MODULE(rapidx2j, InitAll)

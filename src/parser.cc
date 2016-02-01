@@ -28,33 +28,33 @@ static void toLower(std::string &s)
 static v8::Local<v8::Value> parseText(const std::string &text)
 {
   if (text.find_first_not_of(" \t\n\r") == std::string::npos) // empty string
-    return NanNull();
+    return Nan::Null();
 
   std::string tmp = text;
   toLower(tmp);
   if (tmp == "true")
-    return NanNew<v8::Boolean>(true);
+    return Nan::New<v8::Boolean>(true);
   else if (tmp == "false")
-    return NanNew<v8::Boolean>(false);
+    return Nan::New<v8::Boolean>(false);
 
   if (gBeginsWith.length() > 0 && text.find_first_of(gBeginsWith) == 0)
-    return NanNew<v8::String>(text);
+    return Nan::New<v8::String>(text).ToLocalChecked();
 
   char *c = const_cast<char *>(text.c_str());
   if (gParseDouble)
   {
     double d = ::strtod(text.c_str(), &c);
     if (*c == '\0')
-      return NanNew<v8::Number>(d);
+      return Nan::New<v8::Number>(d);
   }
   else if (gParseInteger)
   {
     long l = ::strtol(text.c_str(), &c, 10);
     if (!(text.c_str() == c || *c != '\0' || ((l == LONG_MIN || l == LONG_MAX) && errno == ERANGE)))
-      return NanNew<v8::Number>(l);
+      return Nan::New<v8::Number>(l);
   }
 
-  return NanNew<v8::String>(text);
+  return Nan::New<v8::String>(text).ToLocalChecked();
 }
 
 static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
@@ -67,13 +67,13 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
 
   if (node->first_attribute())
   {
-    ret = NanNew<v8::Object>();
+    ret = Nan::New<v8::Object>();
     for (const rapidxml::xml_attribute<> *a = node->first_attribute(); a; a = a->next_attribute())
     {
       ++len;
       std::string tmp("@" + std::string(a->name()));
       toLower(tmp);
-      v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>(tmp), parseText(trim(std::string(a->value()))));
+      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(trim(std::string(a->value()))));
     }
   }
 
@@ -87,19 +87,19 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     else if (t == rapidxml::node_element)
     {
       if (len == 0)
-        ret = NanNew<v8::Object>();
+        ret = Nan::New<v8::Object>();
       std::string prop = n->name();
       toLower(prop);
       v8::Local<v8::Value> obj = walk(n);
       v8::Local<v8::Object> myret = v8::Local<v8::Object>::Cast(ret);
 
-      v8::Local<v8::String> key = NanNew<v8::String>(prop);
+      v8::Local<v8::String> key = Nan::New<v8::String>(prop).ToLocalChecked();
       if (myret->Has(key))
       {
-        v8::Local<v8::Value> arr = myret->Get(NanNew<v8::String>(prop));
+        v8::Local<v8::Value> arr = myret->Get(Nan::New<v8::String>(prop).ToLocalChecked());
         if (!arr->IsArray())
         {
-          v8::Local<v8::Array> a = NanNew<v8::Array>();
+          v8::Local<v8::Array> a = Nan::New<v8::Array>();
           a->Set(0, myret->Get(key));
           myret->Set(key, a);
           arr = a;
@@ -117,7 +117,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   if (collected.length() > 0)
   {
     if (len > 0)
-      v8::Local<v8::Object>::Cast(ret)->Set(NanNew<v8::String>("keyValue"), parseText(collected));
+      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>("keyValue").ToLocalChecked(), parseText(collected));
     else
       ret = parseText(collected);
   }
@@ -125,47 +125,47 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   return ret;
 }
 
-static bool parseArgs(_NAN_METHOD_ARGS)
+static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
 {
   if (args.Length() < 1)
   {
-    NanThrowError("Wrong number of arguments");
+    Nan::ThrowError("Wrong number of arguments");
     return false;
   }
   if (args.Length() >= 2)
   {
     if (!args[0]->IsString())
     {
-      NanThrowError("Wrong argument; expected String");
+      Nan::ThrowError("Wrong argument; expected String");
       return false;
     }
     if (!args[1]->IsObject())
     {
-      NanThrowError("Wrong argument; expected Object");
+      Nan::ThrowError("Wrong argument; expected Object");
       return false;
     }
     else
     {
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
-      if (!tmp->HasOwnProperty(NanNew<v8::String>("empty_tag_value")))
-        gEmptyTagValue = NanNew<v8::Boolean>(true);
+      if (!Nan::HasOwnProperty(tmp, Nan::New<v8::String>("empty_tag_value").ToLocalChecked()).FromMaybe(false))
+        gEmptyTagValue = Nan::New<v8::Boolean>(true);
       else
-        gEmptyTagValue = tmp->Get(NanNew<v8::String>("empty_tag_value"));
-      if (tmp->HasOwnProperty(NanNew<v8::String>("parse_float_numbers")))
-        gParseDouble = tmp->Get(NanNew<v8::String>("parse_float_numbers"))->BooleanValue();
+        gEmptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_float_numbers").ToLocalChecked()).FromMaybe(false))
+        gParseDouble = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_float_numbers").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         gParseDouble = true;
-      if (tmp->HasOwnProperty(NanNew<v8::String>("parse_int_numbers")))
-        gParseInteger = tmp->Get(NanNew<v8::String>("parse_int_numbers"))->BooleanValue();
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_int_numbers").ToLocalChecked()).FromMaybe(false))
+        gParseInteger = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_int_numbers").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         gParseInteger = true;
-      v8::String::Utf8Value s(tmp->Get(NanNew<v8::String>("skip_parse_when_begins_with"))->ToString());
+      v8::String::Utf8Value s(tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
       gBeginsWith = *s;
     }
   }
   else
   {
-    gEmptyTagValue = NanNew<v8::Boolean>(true);
+    gEmptyTagValue = Nan::New<v8::Boolean>(true);
     gParseDouble = true;
     gParseInteger = true;
     gBeginsWith = "";
@@ -175,12 +175,13 @@ static bool parseArgs(_NAN_METHOD_ARGS)
 
 NAN_METHOD(parse)
 {
-  NanScope();
+  if (!parseArgs(info))
+  {
+    info.GetReturnValue().SetUndefined();
+    return;
+  }
 
-  if (!parseArgs(args))
-    NanReturnUndefined();
-
-  NanUtf8String xml(args[0]);
+  Nan::Utf8String xml(info[0]);
   rapidxml::xml_document<char> doc;
   try
   {
@@ -188,23 +189,25 @@ NAN_METHOD(parse)
   }
   catch (rapidxml::parse_error &)
   {
-    NanReturnUndefined();
+    info.GetReturnValue().SetUndefined();
+    return;
   }
 
   if (doc.first_node())
   {
     v8::Local<v8::Value> obj = walk(doc.first_node());
-    NanReturnValue(obj);
+    info.GetReturnValue().Set(obj);
+    return;
   }
 
-  NanReturnUndefined();
+  info.GetReturnValue().SetUndefined();
 }
 
-class AsyncParser : public NanAsyncWorker
+class AsyncParser : public Nan::AsyncWorker
 {
 public:
-  AsyncParser(NanCallback *callback, NanUtf8String *xml)
-  : NanAsyncWorker(callback)
+  AsyncParser(Nan::Callback *callback, Nan::Utf8String *xml)
+  : Nan::AsyncWorker(callback)
   , m_xml(xml)
   {}
 
@@ -227,46 +230,49 @@ public:
 
   virtual void HandleOKCallback()
   {
-    NanScope();
+    Nan::HandleScope scope;
 
-    v8::Local<v8::Value> val = NanUndefined();
+    v8::Local<v8::Value> val = Nan::Undefined();
     if (m_doc.first_node())
       val = walk(m_doc.first_node());
 
     v8::Local<v8::Value> argv[] = 
     {
-      NanNull(),
+      Nan::Null(),
       val
     };
     callback->Call(2, argv);
   }
 
 private:
-  NanUtf8String *m_xml;
+  Nan::Utf8String *m_xml;
   rapidxml::xml_document<char> m_doc;
   v8::Local<v8::Value> m_result;
 };
 
 NAN_METHOD(parseAsync)
 {
-  NanScope();
-
-  if (!parseArgs(args))
-    NanReturnUndefined();
-
-  if (args.Length() != 3) // xml string, options object, callback
+  if (!parseArgs(info))
   {
-    NanThrowError("Invalid number of arguments");
-    NanReturnUndefined();
+    info.GetReturnValue().SetUndefined();
+    return;
   }
-  if (!args[2]->IsFunction())
-  {
-    NanThrowError("Invalid argument; expected Function");
-    NanReturnUndefined();
-  }
-  NanUtf8String *xml = new NanUtf8String(args[0]);
-  NanCallback *cb = new NanCallback(args[2].As<v8::Function>());
-  NanAsyncQueueWorker(new AsyncParser(cb, xml));
 
-  NanReturnUndefined();
+  if (info.Length() != 3) // xml string, options object, callback
+  {
+    Nan::ThrowError("Invalid number of arguments");
+    info.GetReturnValue().SetUndefined();
+    return;
+  }
+  if (!info[2]->IsFunction())
+  {
+    Nan::ThrowError("Invalid argument; expected Function");
+    info.GetReturnValue().SetUndefined();
+    return;
+  }
+  Nan::Utf8String *xml = new Nan::Utf8String(info[0]);
+  Nan::Callback *cb = new Nan::Callback(info[2].As<v8::Function>());
+  Nan::AsyncQueueWorker(new AsyncParser(cb, xml));
+
+  info.GetReturnValue().SetUndefined();
 }
