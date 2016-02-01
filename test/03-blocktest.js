@@ -1,4 +1,4 @@
-var r = require('rapidx2j');
+var r = require('../build/Release/rapidx2j');
 var x = '';
 var limit = 999999;
 
@@ -16,7 +16,7 @@ console.log('Done.');
 var timer = setInterval(myTimer, 40);
 
 console.log('Starting XML parser...');
-r.parse(x, null, cb);
+r.parseAsync(x, {}, cb);
 
 console.log('Current tick: Can you read me before rapid calls back?'); 
 
