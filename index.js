@@ -21,7 +21,7 @@ exports.parse = function() {
   var args = Array.prototype.slice.call(arguments, 0);
 
   // xml argument should be string or buffer
-  if (typeof args[0] == 'string' || (typeof args[0] == 'object' && args[0].constructor && args[0].constructor.name = 'Buffer'))
+  if (typeof args[0] == 'string' || (typeof args[0] == 'object' && args[0].constructor && args[0].constructor.name == 'Buffer'))
     xml = args.shift();
   else
     throw new Error('XML needs to be a string of buffer.');
