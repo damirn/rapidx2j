@@ -159,7 +159,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).FromMaybe(false))
         gParseBoolean = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
-        gParseBoolean = false;        
+        gParseBoolean = true;        
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_float_numbers").ToLocalChecked()).FromMaybe(false))
         gParseDouble = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_float_numbers").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
