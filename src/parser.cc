@@ -9,6 +9,7 @@
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
 static bool gParseDouble;
 static bool gParseInteger;
+static bool gPreserveCase;
 static std::string gBeginsWith;
 
 static std::string trim(const std::string &s)
@@ -31,7 +32,7 @@ static v8::Local<v8::Value> parseText(const std::string &text)
     return Nan::Null();
 
   std::string tmp = text;
-  toLower(tmp);
+  if (!gPreserveCase) toLower(tmp);
   if (tmp == "true")
     return Nan::New<v8::Boolean>(true);
   else if (tmp == "false")
@@ -72,7 +73,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     {
       ++len;
       std::string tmp("@" + std::string(a->name()));
-      toLower(tmp);
+      if (!gPreserveCase) toLower(tmp);
       v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(trim(std::string(a->value()))));
     }
   }
@@ -89,7 +90,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
       if (len == 0)
         ret = Nan::New<v8::Object>();
       std::string prop = n->name();
-      toLower(prop);
+      if (!gPreserveCase) toLower(prop);
       v8::Local<v8::Value> obj = walk(n);
       v8::Local<v8::Object> myret = v8::Local<v8::Object>::Cast(ret);
 
@@ -159,6 +160,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
         gParseInteger = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_int_numbers").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         gParseInteger = true;
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("preserve_case").ToLocalChecked()).FromMaybe(false))
+        gPreserveCase = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("preserve_case").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        gPreserveCase = false;        
       v8::String::Utf8Value s(tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
       gBeginsWith = *s;
     }
