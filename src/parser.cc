@@ -7,6 +7,7 @@
 #include <errno.h>
 
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
+static bool gParseBoolean;
 static bool gParseDouble;
 static bool gParseInteger;
 static bool gPreserveCase;
@@ -33,10 +34,13 @@ static v8::Local<v8::Value> parseText(const std::string &text)
 
   std::string tmp = text;
   if (!gPreserveCase) toLower(tmp);
-  if (tmp == "true")
-    return Nan::New<v8::Boolean>(true);
-  else if (tmp == "false")
-    return Nan::New<v8::Boolean>(false);
+  if (gParseBoolean)
+  {
+    if (tmp == "true")
+      return Nan::New<v8::Boolean>(true);
+    else if (tmp == "false")
+      return Nan::New<v8::Boolean>(false);
+  }
 
   if (gBeginsWith.length() > 0 && text.find_first_of(gBeginsWith) == 0)
     return Nan::New<v8::String>(text).ToLocalChecked();
@@ -152,6 +156,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
         gEmptyTagValue = Nan::New<v8::Boolean>(true);
       else
         gEmptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).FromMaybe(false))
+        gParseBoolean = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        gParseBoolean = false;        
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_float_numbers").ToLocalChecked()).FromMaybe(false))
         gParseDouble = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_float_numbers").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
