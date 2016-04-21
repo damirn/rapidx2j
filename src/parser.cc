@@ -32,7 +32,8 @@ static v8::Local<v8::Value> parseText(const std::string &text)
     return Nan::Null();
 
   std::string tmp = text;
-  if (!gPreserveCase) toLower(tmp);
+  if (!gPreserveCase)
+    toLower(tmp);
   if (tmp == "true")
     return Nan::New<v8::Boolean>(true);
   else if (tmp == "false")
@@ -73,7 +74,8 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
     {
       ++len;
       std::string tmp("@" + std::string(a->name()));
-      if (!gPreserveCase) toLower(tmp);
+      if (!gPreserveCase)
+        toLower(tmp);
       v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(trim(std::string(a->value()))));
     }
   }
@@ -173,6 +175,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
     gEmptyTagValue = Nan::New<v8::Boolean>(true);
     gParseDouble = true;
     gParseInteger = true;
+    gPreserveCase = false;
     gBeginsWith = "";
   }
   return true;
