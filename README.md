@@ -26,8 +26,10 @@ console.log(json);
 var x2j = require('rapidx2j');
 var options = {
   empty_tag_value: null,
+  parse_boolean_values: true,
   parse_int_numbers: true,
   parse_float_numbers: true,
+  preserve_case: false,
   skip_parse_when_begins_with: ''  
 };
 var json = x2j.parse(xml_string, options);
@@ -46,12 +48,15 @@ var json = x2j.parse(xml_string, function(err, json) {
 
 Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
 (i.e. to 'null' in this case).
-'parse_int_numbers' and 'parse_float_numbers' will or will not parse XML values which are int/float numbers to appropriate java script types.
+'parse_boolean_values', 'parse_int_numbers' and 'parse_float_numbers' will or will not parse XML values which are bool/int/float numbers to appropriate java script types.
+'preserve_case' will or will not preserve XML tag and attribute name case.
 'skip_parse_when_begins_with' will not parse XML values which begin with a given string to appropriate java script types.
 ## Supported Node versions
 
  * node 0.10.x
  * node 0.12.x
+ * node 4.x
+ * node 5.x
 
 ## Contributors
 
