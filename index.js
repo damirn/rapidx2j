@@ -24,7 +24,7 @@ exports.parse = function() {
   if (typeof args[0] == 'string' || (typeof args[0] == 'object' && args[0].constructor && args[0].constructor.name == 'Buffer'))
     xml = args.shift();
   else
-    throw new Error('XML needs to be a string of buffer.');
+    throw new Error('XML needs to be a string or a buffer.');
 
   // options argument should be any object
   if (typeof args[0] == 'object')
