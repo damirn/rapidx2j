@@ -212,6 +212,8 @@ NAN_METHOD(parse)
 
   if (doc.first_node())
   {
+    if (!doc.first_node()->first_attribute() && !doc.first_node()->first_node())
+      return info.GetReturnValue().Set(Nan::New<v8::Object>());
     v8::Local<v8::Value> obj = walk(doc.first_node());
     info.GetReturnValue().Set(obj);
     return;
@@ -251,7 +253,12 @@ public:
 
     v8::Local<v8::Value> val = Nan::Undefined();
     if (m_doc.first_node())
-      val = walk(m_doc.first_node());
+    {
+      if (!m_doc.first_node()->first_attribute() && !m_doc.first_node()->first_node())
+          val = Nan::New<v8::Object>();
+      else
+          val = walk(m_doc.first_node());
+    }
 
     v8::Local<v8::Value> argv[] = 
     {
