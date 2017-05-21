@@ -12,14 +12,12 @@ for (var i = 0; i < limit; i++) {
 x += '</xml>';
 console.log('Done.');
 
-
 var timer = setInterval(myTimer, 40);
 
 console.log('Starting XML parser...');
 r.parseAsync(x, {}, cb);
 
 console.log('Current tick: Can you read me before rapid calls back?'); 
-
 
 function cb(err, value) {
 	if (err)
