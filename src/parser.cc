@@ -141,9 +141,9 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
   }
   if (args.Length() >= 2)
   {
-    if (!args[0]->IsString())
+    if (!args[0]->IsString() && !args[0]->IsObject())
     {
-      Nan::ThrowError("Wrong argument; expected String");
+      Nan::ThrowError("Wrong argument; expected String or Buffer");
       return false;
     }
     if (!args[1]->IsObject())
