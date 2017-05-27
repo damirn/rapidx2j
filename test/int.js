@@ -8,5 +8,5 @@ assert.equal(o.a, 1);
 assert.equal(o.b, 10);
 
 o = r.parse(x, { parse_int_numbers: false });
-assert.equal(o.a, '1');
-assert.equal(o.b, '10');
+assert.strictEqual(o.a, '1');
+assert.strictEqual(o.b, '10');
