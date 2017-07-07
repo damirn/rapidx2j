@@ -25,12 +25,15 @@ console.log(json);
 ```javascript
 var x2j = require('rapidx2j');
 var options = {
+  attr_group: false,
+  attr_prefix: '@',
   empty_tag_value: null,
   parse_boolean_values: true,
   parse_int_numbers: true,
   parse_float_numbers: true,
   preserve_case: false,
-  skip_parse_when_begins_with: ''  
+  skip_parse_when_begins_with: '',
+  value_key: 'keyValue'
 };
 var json = x2j.parse(xml_string, options);
 console.log(json);

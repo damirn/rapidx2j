@@ -7,11 +7,14 @@
 #include <errno.h>
 
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
+static bool gGroupAttributes;
 static bool gParseBoolean;
 static bool gParseDouble;
 static bool gParseInteger;
 static bool gPreserveCase;
+static std::string gAttributePrefix;
 static std::string gBeginsWith;
+static std::string gValueKey;
 
 static std::string trim(const std::string &s)
 {
@@ -73,14 +76,27 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
 
   if (node->first_attribute())
   {
-    ret = Nan::New<v8::Object>();
+    v8::Local<v8::Value> attr = ret = Nan::New<v8::Object>();
+    
+    if (gGroupAttributes) {
+      attr = Nan::New<v8::Object>();
+      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(gAttributePrefix).ToLocalChecked(), attr);
+    }
+    
     for (const rapidxml::xml_attribute<> *a = node->first_attribute(); a; a = a->next_attribute())
     {
+      std::string tmp;
       ++len;
-      std::string tmp("@" + std::string(a->name()));
+
+      if (gGroupAttributes) {
+        tmp = std::string(a->name());
+      } else {
+        tmp = gAttributePrefix + std::string(a->name());
+      }
+      
       if (!gPreserveCase)
         toLower(tmp);
-      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(trim(std::string(a->value()))));
+      v8::Local<v8::Object>::Cast(attr)->Set(Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(trim(std::string(a->value()))));
     }
   }
 
@@ -124,7 +140,7 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   if (collected.length() > 0)
   {
     if (len > 0)
-      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>("keyValue").ToLocalChecked(), parseText(collected));
+      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(gValueKey).ToLocalChecked(), parseText(collected));
     else
       ret = parseText(collected);
   }
@@ -154,10 +170,26 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
     else
     {
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_prefix").ToLocalChecked()).FromMaybe(false)) {
+        v8::String::Utf8Value gAttributePrefixObj(tmp->Get(Nan::New<v8::String>("attr_prefix").ToLocalChecked())->ToString());
+        gAttributePrefix = *gAttributePrefixObj;
+      }
+      else
+        gAttributePrefix = "@";
       if (!Nan::HasOwnProperty(tmp, Nan::New<v8::String>("empty_tag_value").ToLocalChecked()).FromMaybe(false))
         gEmptyTagValue = Nan::New<v8::Boolean>(true);
       else
         gEmptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("value_key").ToLocalChecked()).FromMaybe(false)) {
+        v8::String::Utf8Value gValueKeyObj(tmp->Get(Nan::New<v8::String>("value_key").ToLocalChecked())->ToString());
+        gValueKey = *gValueKeyObj;
+      }
+      else
+        gValueKey = "keyValue";
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).FromMaybe(false))
+        gGroupAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        gGroupAttributes = false;        
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).FromMaybe(false))
         gParseBoolean = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
@@ -181,11 +213,14 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
   else
   {
     gEmptyTagValue = Nan::New<v8::Boolean>(true);
+    gGroupAttributes = false;    
     gParseBoolean = true;
     gParseDouble = true;
     gParseInteger = true;
     gPreserveCase = false;
+    gAttributePrefix = "@";
     gBeginsWith = "";
+    gValueKey = "keyValue";
   }
   return true;
 }
