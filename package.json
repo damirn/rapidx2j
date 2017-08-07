@@ -1,6 +1,6 @@
 {
   "name": "rapidx2j",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Node.js XML to JSON using rapidXML",
   "main": "index.js",
   "private": false,
