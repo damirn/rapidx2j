@@ -13,6 +13,7 @@ static bool gParseDouble;
 static bool gParseInteger;
 static bool gPreserveCase;
 static std::string gAttributePrefix;
+static bool gExplicitArray;
 static std::string gBeginsWith;
 static std::string gValueKey;
 
@@ -132,8 +133,18 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
       }
       else
       {
-        myret->Set(key, obj);
-        ++len;
+        if (gExplicitArray && obj->IsObject())
+        {
+          v8::Local<v8::Array> a = Nan::New<v8::Array>();
+          a->Set(0, obj);
+          myret->Set(key, a);
+          ++len;
+        }
+        else
+        {
+          myret->Set(key, obj);
+          ++len;
+        }
       }
     }
   }
@@ -190,6 +201,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
         gGroupAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         gGroupAttributes = false;        
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("explicit_array").ToLocalChecked()).FromMaybe(false))
+        gExplicitArray = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("explicit_array").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        gExplicitArray = false;
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).FromMaybe(false))
         gParseBoolean = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("parse_boolean_values").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
@@ -213,7 +228,8 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
   else
   {
     gEmptyTagValue = Nan::New<v8::Boolean>(true);
-    gGroupAttributes = false;    
+    gExplicitArray = false;
+    gGroupAttributes = false;
     gParseBoolean = true;
     gParseDouble = true;
     gParseInteger = true;
