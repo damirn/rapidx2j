@@ -138,13 +138,12 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
           v8::Local<v8::Array> a = Nan::New<v8::Array>();
           a->Set(0, obj);
           myret->Set(key, a);
-          ++len;
         }
         else
         {
           myret->Set(key, obj);
-          ++len;
         }
+        ++len;
       }
     }
   }
