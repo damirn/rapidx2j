@@ -19,6 +19,7 @@ struct Options {
   bool preserveCase;
   bool explicitArray;
   bool ignoreAttributes;
+  bool explicitObject;
   bool includeRoot;
 
   std::string attributePrefix;
@@ -181,8 +182,12 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
   }
   if (collected.length() > 0)
   {
-    if (len > 0)
+    if (len > 0 || options.explicitObject)
+    {
+      if (len == 0)
+        ret = Nan::New<v8::Object>();
       Nan::Set(v8::Local<v8::Object>::Cast(ret), Nan::New<v8::String>(options.valueKey).ToLocalChecked(), parseText(options, collected));
+    }
     else
       ret = parseText(options, collected);
   }
@@ -235,6 +240,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
       }
       else
         options.valueKey = "keyValue";
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("explicit_object").ToLocalChecked()).FromMaybe(false))
+        options.explicitObject = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("explicit_object").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        options.explicitObject = false;
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).FromMaybe(false))
         options.groupAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
@@ -283,6 +292,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     options.preserveCase = false;
     options.explicitArray = false;
     options.ignoreAttributes = false;
+    options.explicitObject = false;
     options.includeRoot = false;
     options.attributePrefix = "@";
     options.beginsWith = "";
