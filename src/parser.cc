@@ -8,6 +8,7 @@
 
 static v8::Local<v8::Value> gEmptyTagValue; // default value for empty tags
 static bool gGroupAttributes;
+static bool gExplicitObject;
 static bool gParseBoolean;
 static bool gParseDouble;
 static bool gParseInteger;
@@ -139,8 +140,12 @@ static v8::Local<v8::Value> walk(const rapidxml::xml_node<> *node)
   }
   if (collected.length() > 0)
   {
-    if (len > 0)
+    if (len > 0 || gExplicitObject)
+    {
+      if (len == 0)
+        ret = Nan::New<v8::Object>();
       v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(gValueKey).ToLocalChecked(), parseText(collected));
+    }
     else
       ret = parseText(collected);
   }
@@ -186,6 +191,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
       }
       else
         gValueKey = "keyValue";
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("explicit_object").ToLocalChecked()).FromMaybe(false))
+        gExplicitObject = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("explicit_object").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        gExplicitObject = false;
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).FromMaybe(false))
         gGroupAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("attr_group").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
@@ -214,6 +223,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args)
   {
     gEmptyTagValue = Nan::New<v8::Boolean>(true);
     gGroupAttributes = false;    
+    gExplicitObject = false;
     gParseBoolean = true;
     gParseDouble = true;
     gParseInteger = true;
