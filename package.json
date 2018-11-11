@@ -6,7 +6,7 @@
   "private": false,
   "gypfile": true,
   "scripts": {
-    "install": "cmake-js compile"
+    "install": "node-gyp rebuild"
   },
   "files": [
     "src",
@@ -17,9 +17,6 @@
   "dependencies": {
     "cmake-js": "^3.0.0",
     "nan": "^2.2.0"
-  },
-  "scripts": {
-    "install": "node-gyp rebuild"
   },
   "directories": {
     "test": "test"
