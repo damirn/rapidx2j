@@ -320,7 +320,7 @@ public:
       Nan::Null(),
       val
     };
-    callback->Call(2, argv);
+    Nan::Call(callback->GetFunction(), Nan::GetCurrentContext()->Global(), 2, argv);
   }
 
 private:
