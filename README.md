@@ -61,6 +61,7 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
  * node 4.x
  * node 5.x
  * node 6.x
+ * node 8.x
 
 ## Contributors
 
