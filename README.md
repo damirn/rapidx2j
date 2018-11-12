@@ -32,6 +32,7 @@ const options = {
   parse_int_numbers: true,
   parse_float_numbers: true,
   preserve_case: false,
+  explicit_array: false,
   skip_parse_when_begins_with: '',
   value_key: 'keyValue'
 };
