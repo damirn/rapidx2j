@@ -15,16 +15,16 @@ Inspired by [fast-feed](https://github.com/rla/fast-feed).
 #### Sync
 
 ```javascript
-var x2j = require('rapidx2j');
-var json = x2j.parse(xml_string);
+const x2j = require('rapidx2j');
+const json = x2j.parse(xml_string);
 console.log(json);
 ```
 
 #### Sync with optional config object:
 
 ```javascript
-var x2j = require('rapidx2j');
-var options = {
+const x2j = require('rapidx2j');
+const options = {
   attr_group: false,
   attr_prefix: '@',
   empty_tag_value: null,
@@ -35,17 +35,18 @@ var options = {
   skip_parse_when_begins_with: '',
   value_key: 'keyValue'
 };
-var json = x2j.parse(xml_string, options);
+const json = x2j.parse(xml_string, options);
 console.log(json);
 ```
 
 #### Async with callback
 
 ```javascript
-var x2j = require('rapidx2j');
-var json = x2j.parse(xml_string, function(err, json) {
-  if (!err)
+const x2j = require('rapidx2j');
+const json = x2j.parse(xml_string, (err, json) => {
+  if (!err) {
     console.log(json);
+  }
 });
 ```
 
@@ -71,7 +72,7 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
 
 ## License & copyright
 
-Copyright (c) 2015 Damir Nedžibović
+Copyright (c) 2015-2018 Damir Nedžibović
 
 Use of this software is granted under the MIT or the Boost Software License,
 to be chosen freely by the user.
