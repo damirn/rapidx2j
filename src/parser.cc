@@ -15,6 +15,7 @@ struct Options {
   bool parseBoolean;
   bool parseDouble;
   bool preserveCase;
+  bool explicitArray;
 
   std::string attributePrefix;
   std::string beginsWith;
@@ -146,7 +147,16 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
       }
       else
       {
-        myret->Set(key, obj);
+        if (options.explicitArray)
+        {
+          v8::Local<v8::Array> a = Nan::New<v8::Array>();
+          a->Set(0, obj);
+          myret->Set(key, a);
+        }
+        else
+        {
+          myret->Set(key, obj);
+        }
         ++len;
       }
     }
@@ -220,6 +230,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.preserveCase = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("preserve_case").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.preserveCase = false;
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("explicit_array").ToLocalChecked()).FromMaybe(false))
+        options.explicitArray = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("explicit_array").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        options.explicitArray = false;
       v8::String::Utf8Value s(tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
       options.beginsWith = *s;
     }
@@ -232,6 +246,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     options.parseDouble = true;
     options.parseInteger = true;
     options.preserveCase = false;
+    options.explicitArray = false;
     options.attributePrefix = "@";
     options.beginsWith = "";
     options.valueKey = "keyValue";
