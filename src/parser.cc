@@ -195,7 +195,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     {
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_prefix").ToLocalChecked()).FromMaybe(false)) {
-        v8::String::Utf8Value gAttributePrefixObj(tmp->Get(Nan::New<v8::String>("attr_prefix").ToLocalChecked())->ToString());
+        v8::String::Utf8Value gAttributePrefixObj(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("attr_prefix").ToLocalChecked())->ToString());
         options.attributePrefix = *gAttributePrefixObj;
       }
       else
@@ -205,7 +205,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
       else
         options.emptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("value_key").ToLocalChecked()).FromMaybe(false)) {
-        v8::String::Utf8Value gValueKeyObj(tmp->Get(Nan::New<v8::String>("value_key").ToLocalChecked())->ToString());
+        v8::String::Utf8Value gValueKeyObj(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("value_key").ToLocalChecked())->ToString());
         options.valueKey = *gValueKeyObj;
       }
       else
@@ -234,7 +234,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.explicitArray = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("explicit_array").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.explicitArray = false;
-      v8::String::Utf8Value s(tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
+      v8::String::Utf8Value s(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
       options.beginsWith = *s;
     }
   }

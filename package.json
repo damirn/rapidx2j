@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "Node.js XML to JSON using rapidXML",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "private": false,
   "gypfile": true,
   "scripts": {
@@ -21,7 +22,9 @@
   "directories": {
     "test": "test"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.12.18"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/damirn/rapidx2j.git"

@@ -1,9 +1,9 @@
-var native = require('./build/Release/rapidx2j');
+const native = require('./build/Release/rapidx2j');
 
 const default_options = {
-  empty_tag_value: true, 
-  parse_int_numbers: true, 
-  parse_float_numbers: true, 
+  empty_tag_value: true,
+  parse_int_numbers: true,
+  parse_float_numbers: true,
   skip_parse_when_begins_with: ''
 };
 
@@ -15,34 +15,29 @@ const default_options = {
  * @param {function} [callback] - Provide callback for async method (optional).
  */
 exports.parse = function() {
-  var xml, options, callback;
+  let xml, options = {}, callback;
 
   // Get arguments
-  var args = Array.prototype.slice.call(arguments, 0);
+  const args = Array.prototype.slice.call(arguments, 0);
 
   // xml argument should be string or buffer
-  if (typeof args[0] == 'string' || (typeof args[0] == 'object' && args[0].constructor && args[0].constructor.name == 'Buffer'))
+  if (typeof args[0] == 'string' || (typeof args[0] === 'object' && args[0].constructor && args[0].constructor.name === 'Buffer'))
     xml = args.shift();
   else
     throw new Error('XML needs to be a string or a buffer.');
 
   // options argument should be any object
-  if (typeof args[0] == 'object')
+  if (typeof args[0] === 'object' && args[0] !== null)
     options = args.shift();
-  else
-    options = {};
 
   // options argument
-  if (typeof args[0] == 'function')
+  if (typeof args[0] === 'function')
     callback = args.shift();
 
   /*
    * Parse options
    */
 
-  // Options needs to be any `object` except not `null`
-  if (!options || typeof options === 'undefined')
-    options = {};
   // `empty_tag_value` can be anything including `undefined`, but not being defined uses default
   if (!options.hasOwnProperty('empty_tag_value'))
     options.empty_tag_value = default_options.empty_tag_value;
@@ -62,4 +57,4 @@ exports.parse = function() {
 
   // Sync
   return native.parse(xml, options);
-}
+};
