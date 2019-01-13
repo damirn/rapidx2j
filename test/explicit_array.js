@@ -1,16 +1,18 @@
-var r = require('../build/Release/rapidx2j');
-var assert = require('assert');
-var x = '<a><b>123</b><b>abc</b></a>';
-var y = '<a><b>123</b></a>';
+'use strict';
 
-describe('explicit_array', function () {
-    it('should return an array for multiple tags', function () {
-        var o = r.parse(x);
+const r = require('../index');
+const assert = require('assert');
+
+describe('explicit_array', () => {
+    it('should return an array for multiple tags', () => {
+        const x = '<a><b>123</b><b>abc</b></a>';
+        const o = r.parse(x);
         assert(isArray(o.b));
     });
-    it('should return an array even if single tag, explicit_array = true', function () {
-        var b = r.parse(y);
-        var o = r.parse(y, { explicit_array: true });
+    it('should return an array even if single tag, explicit_array = true', () => {
+        const y = '<a><b>123</b></a>';
+        const b = r.parse(y);
+        const o = r.parse(y, { explicit_array: true });
         assert(!isArray(b.b));
         assert(isArray(o.b));
     });

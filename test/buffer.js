@@ -1,11 +1,14 @@
-var assert = require('assert');
-var fs = require('fs');
-var r = require('../build/Release/rapidx2j');
-var buffer = fs.readFileSync(__dirname + '/test.xml');
+'use strict';
 
-describe('Buffer as input value', function () {
-    it('should parse buffer', function () {
-        var o = r.parse(buffer);
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const r = require('../index');
+const buffer = fs.readFileSync(path.resolve(__dirname, 'test.xml'));
+
+describe('Buffer as input value', () => {
+    it('should parse buffer', () => {
+        const o = r.parse(buffer);
         assert(typeof o.b === 'string' && o.b === 'hello');
     });
 });

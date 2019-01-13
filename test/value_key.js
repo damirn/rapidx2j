@@ -1,15 +1,17 @@
-var assert = require('assert'),
-    r = require('../build/Release/rapidx2j'),
-    x = '<x><a attr1="a" attr2="b">val</a></x>';
+'use strict';
 
-describe('value_key', function () {
-    it('should set key for value, value_key = &', function () {
-        var oValueKey = r.parse(x, { value_key: '&' });
+const assert = require('assert');
+const r = require('../index');
+const x = '<x><a attr1="a" attr2="b">val</a></x>';
+
+describe('value_key', () => {
+    it('should set key for value, value_key = &', () => {
+        const oValueKey = r.parse(x, { value_key: '&' });
         assert('&' in oValueKey.a);
     });
 
-    it('should not set key for value, value_key is undefined', function () {
-        var oNoValueKey = r.parse(x);
+    it('should not set key for value, value_key is undefined', () => {
+        const oNoValueKey = r.parse(x);
         assert('keyValue' in oNoValueKey.a);
     });
 });
