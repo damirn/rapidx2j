@@ -1,13 +1,14 @@
 {
   "name": "rapidx2j",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Node.js XML to JSON using rapidXML",
   "main": "index.js",
   "types": "types/index.d.ts",
   "private": false,
   "gypfile": true,
   "scripts": {
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild",
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "files": [
     "src",
@@ -16,14 +17,15 @@
     "package.json"
   ],
   "dependencies": {
-    "cmake-js": "^3.0.0",
+    "cmake-js": "^3.7.3",
     "nan": "^2.2.0"
   },
   "directories": {
     "test": "test"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "mocha": "^5.2.0"
   },
   "repository": {
     "type": "git",
