@@ -1,6 +1,8 @@
-var native = require('./build/Release/rapidx2j');
+'use strict';
 
-var default_options = {
+const native = require('./build/Release/rapidx2j');
+
+const default_options = {
   empty_tag_value: true,
   parse_int_numbers: true,
   parse_float_numbers: true,
@@ -16,11 +18,11 @@ var default_options = {
  *
  * @returns {object|function}
  */
-exports.parse = function() {
-  var xml, options = {}, callback;
+module.exports.parse = function() {
+  let xml, options = {}, callback;
 
   // Get arguments
-  var args = Array.prototype.slice.call(arguments, 0);
+  const args = Array.prototype.slice.call(arguments, 0);
 
   // xml argument should be string or buffer
   if (typeof args[0] === 'string' || (typeof args[0] === 'object' && args[0].constructor && args[0].constructor.name === 'Buffer'))
