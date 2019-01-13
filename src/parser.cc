@@ -16,6 +16,7 @@ struct Options {
   bool parseDouble;
   bool preserveCase;
   bool explicitArray;
+  bool ignoreAttributes;
 
   std::string attributePrefix;
   std::string beginsWith;
@@ -88,7 +89,7 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
 
   // handle attributes here
 
-  if (node->first_attribute())
+  if (!options.ignoreAttributes && node->first_attribute())
   {
     v8::Local<v8::Value> attr = ret = Nan::New<v8::Object>();
 
@@ -234,6 +235,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.explicitArray = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("explicit_array").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.explicitArray = false;
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("ignore_attr").ToLocalChecked()).FromMaybe(false))
+        options.ignoreAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("ignore_attr").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        options.ignoreAttributes = false;
       v8::String::Utf8Value s(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
       options.beginsWith = *s;
     }
