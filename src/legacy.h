@@ -26,4 +26,3 @@ class StringValueWrapper {
 };
 
 using Utf8ValueWrapper = StringValueWrapper<v8::String::Utf8Value>;
-using Utf16ValueWrapper = StringValueWrapper<v8::String::Utf8Value>;
