@@ -73,7 +73,7 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
 
 ## License & copyright
 
-Copyright (c) 2015-2018 Damir Nedžibović
+Copyright (c) 2015-2019 Damir Nedžibović
 
 Use of this software is granted under the MIT or the Boost Software License,
 to be chosen freely by the user.
