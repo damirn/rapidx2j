@@ -1,7 +1,11 @@
-'use strict';
+var rapidx2j = require('../index');
+var assert = require('assert');
 
-const rapidx2j = require('../build/Release/rapidx2j');
-
-rapidx2j.parse('<root/>', (err, json) => {
-  console.log(json);
+describe('<root/>', function () {
+  it('should return an empty object', function (done) {
+    rapidx2j.parse('<root/>', (err, json) => {
+      assert(typeof json === 'object' && json !== null && Object.keys(json) !== null);
+      done();
+    });
+  });
 });

@@ -252,6 +252,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     options.parseInteger = true;
     options.preserveCase = false;
     options.explicitArray = false;
+    options.ignoreAttributes = false;
     options.attributePrefix = "@";
     options.beginsWith = "";
     options.valueKey = "keyValue";

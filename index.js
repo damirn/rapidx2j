@@ -1,6 +1,6 @@
-const native = require('./build/Release/rapidx2j');
+var native = require('./build/Release/rapidx2j');
 
-const default_options = {
+var default_options = {
   empty_tag_value: true,
   parse_int_numbers: true,
   parse_float_numbers: true,
@@ -13,15 +13,17 @@ const default_options = {
  * @param {string} xml - The XML to parse.
  * @param {object} [options] - Change default options (optional).
  * @param {function} [callback] - Provide callback for async method (optional).
+ *
+ * @returns {object|function}
  */
 exports.parse = function() {
-  let xml, options = {}, callback;
+  var xml, options = {}, callback;
 
   // Get arguments
-  const args = Array.prototype.slice.call(arguments, 0);
+  var args = Array.prototype.slice.call(arguments, 0);
 
   // xml argument should be string or buffer
-  if (typeof args[0] == 'string' || (typeof args[0] === 'object' && args[0].constructor && args[0].constructor.name === 'Buffer'))
+  if (typeof args[0] === 'string' || (typeof args[0] === 'object' && args[0].constructor && args[0].constructor.name === 'Buffer'))
     xml = args.shift();
   else
     throw new Error('XML needs to be a string or a buffer.');
