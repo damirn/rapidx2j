@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "rapidxml.hpp"
+#include "legacy.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -194,9 +195,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     }
     else
     {
+      v8::Isolate* isolate = args.GetIsolate();
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_prefix").ToLocalChecked()).FromMaybe(false)) {
-        v8::String::Utf8Value gAttributePrefixObj(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("attr_prefix").ToLocalChecked())->ToString());
+        Utf8ValueWrapper gAttributePrefixObj(isolate, tmp->Get(Nan::New<v8::String>("attr_prefix").ToLocalChecked())->ToString());
         options.attributePrefix = *gAttributePrefixObj;
       }
       else
@@ -206,7 +208,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
       else
         options.emptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("value_key").ToLocalChecked()).FromMaybe(false)) {
-        v8::String::Utf8Value gValueKeyObj(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("value_key").ToLocalChecked())->ToString());
+        Utf8ValueWrapper gValueKeyObj(isolate, tmp->Get(Nan::New<v8::String>("value_key").ToLocalChecked())->ToString());
         options.valueKey = *gValueKeyObj;
       }
       else
@@ -239,7 +241,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.ignoreAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("ignore_attr").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.ignoreAttributes = false;
-      v8::String::Utf8Value s(args.GetIsolate(), tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
+      Utf8ValueWrapper s(isolate, tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
       options.beginsWith = *s;
     }
   }
@@ -252,6 +254,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     options.parseInteger = true;
     options.preserveCase = false;
     options.explicitArray = false;
+    options.ignoreAttributes = false;
     options.attributePrefix = "@";
     options.beginsWith = "";
     options.valueKey = "keyValue";

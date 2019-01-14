@@ -7,7 +7,8 @@
   "private": false,
   "gypfile": true,
   "scripts": {
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild",
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "files": [
     "src",
@@ -23,7 +24,8 @@
     "test": "test"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "mocha": "^5.2.0"
   },
   "repository": {
     "type": "git",

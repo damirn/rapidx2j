@@ -12,6 +12,7 @@ declare namespace c {
         parse_boolean_values?: boolean;
         parse_int_numbers?: boolean;
         parse_float_numbers?: boolean;
+        ignore_attr?: boolean;
         preserve_case?: boolean;
         explicit_array?: boolean;
         skip_parse_when_begins_with?: string;

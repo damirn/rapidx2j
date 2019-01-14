@@ -1,10 +1,16 @@
-var assert = require('assert'),
-    r = require('../build/Release/rapidx2j'),
-    x = '<x><a>3.14159</a><B>123</B><c>true</c><d>false</d></x>';
+'use strict';
 
-var oPreserve = r.parse(x, { preserve_case: true });
-var oNoPreserve = r.parse(x, { preserve_case: false });
+const assert = require('assert');
+const r = require('../index');
+const x = '<x><a>3.14159</a><B>123</B><c>true</c><d>false</d></x>';
 
-assert('B' in oPreserve);
-assert('b' in oNoPreserve);
-
+describe('preserve_case', () => {
+    it('should preserve case, preserve_case = true', () => {
+        const oPreserve = r.parse(x, { preserve_case: true });
+        assert('B' in oPreserve);
+    });
+    it('should not preserve case, preserve_case = false', () => {
+        const oNoPreserve = r.parse(x, { preserve_case: false });
+        assert('b' in oNoPreserve);
+    });
+});
