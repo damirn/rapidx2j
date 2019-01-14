@@ -16,7 +16,7 @@ class StringValueWrapper {
     StringValueWrapper(const StringValueWrapper&) = delete;
     StringValueWrapper& operator=(const StringValueWrapper&) = delete;
 
-    auto operator*() const {
+    auto operator*() const -> const char * {
       return *value;
     }
 
