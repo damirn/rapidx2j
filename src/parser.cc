@@ -134,7 +134,7 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
       v8::Local<v8::Object> myret = v8::Local<v8::Object>::Cast(ret);
 
       v8::Local<v8::String> key = Nan::New<v8::String>(prop).ToLocalChecked();
-      if (myret->Has(key))
+      if (Nan::HasOwnProperty(myret, key).FromJust())
       {
         v8::Local<v8::Value> arr = myret->Get(Nan::New<v8::String>(prop).ToLocalChecked());
         if (!arr->IsArray())
@@ -198,7 +198,8 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
       v8::Isolate* isolate = args.GetIsolate();
       v8::Local<v8::Object> tmp = v8::Local<v8::Object>::Cast(args[1]);
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("attr_prefix").ToLocalChecked()).FromMaybe(false)) {
-        Utf8ValueWrapper gAttributePrefixObj(isolate, tmp->Get(Nan::New<v8::String>("attr_prefix").ToLocalChecked())->ToString());
+        v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("attr_prefix").ToLocalChecked()).ToLocalChecked();
+        Utf8ValueWrapper gAttributePrefixObj(isolate, foo);
         options.attributePrefix = *gAttributePrefixObj;
       }
       else
@@ -208,7 +209,8 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
       else
         options.emptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("value_key").ToLocalChecked()).FromMaybe(false)) {
-        Utf8ValueWrapper gValueKeyObj(isolate, tmp->Get(Nan::New<v8::String>("value_key").ToLocalChecked())->ToString());
+        v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("value_key").ToLocalChecked()).ToLocalChecked();
+        Utf8ValueWrapper gValueKeyObj(isolate, foo);
         options.valueKey = *gValueKeyObj;
       }
       else
@@ -241,7 +243,8 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.ignoreAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("ignore_attr").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.ignoreAttributes = false;
-      Utf8ValueWrapper s(isolate, tmp->Get(Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked())->ToString());
+      v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("skip_parse_when_begins_with").ToLocalChecked()).ToLocalChecked();
+      Utf8ValueWrapper s(isolate, foo);
       options.beginsWith = *s;
     }
   }

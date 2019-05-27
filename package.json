@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "cmake-js": "^3.7.3",
-    "nan": "^2.2.0"
+    "nan": "^2.14.0"
   },
   "directories": {
     "test": "test"
