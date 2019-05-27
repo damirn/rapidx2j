@@ -1,9 +1,9 @@
 #include "parser.h"
 
-void InitAll(v8::Handle<v8::Object> exports)
+NAN_MODULE_INIT(InitAll)
 {
-  exports->Set(Nan::New<v8::String>("parse").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(parse)->GetFunction());
-  exports->Set(Nan::New<v8::String>("parseAsync").ToLocalChecked(), Nan::New<v8::FunctionTemplate>(parseAsync)->GetFunction());
+  Nan::Set(target, Nan::New<v8::String>("parse").ToLocalChecked(), Nan::GetFunction(Nan::New<v8::FunctionTemplate>(parse)).ToLocalChecked());
+  Nan::Set(target, Nan::New<v8::String>("parseAsync").ToLocalChecked(), Nan::GetFunction(Nan::New<v8::FunctionTemplate>(parseAsync)).ToLocalChecked());
 }
 
 NODE_MODULE(rapidx2j, InitAll)
