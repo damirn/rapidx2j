@@ -96,7 +96,7 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
 
     if (options.groupAttributes) {
       attr = Nan::New<v8::Object>();
-      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(options.attributePrefix).ToLocalChecked(), attr);
+      Nan::Set(v8::Local<v8::Object>::Cast(ret), Nan::New<v8::String>(options.attributePrefix).ToLocalChecked(), attr);
     }
 
     for (const rapidxml::xml_attribute<> *a = node->first_attribute(); a; a = a->next_attribute())
@@ -112,7 +112,7 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
 
       if (!options.preserveCase)
         toLower(tmp);
-      v8::Local<v8::Object>::Cast(attr)->Set(Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(options, trim(std::string(a->value()))));
+      Nan::Set(v8::Local<v8::Object>::Cast(attr), Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(options, trim(std::string(a->value()))));
     }
   }
 
@@ -136,28 +136,28 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
       v8::Local<v8::String> key = Nan::New<v8::String>(prop).ToLocalChecked();
       if (Nan::HasOwnProperty(myret, key).FromJust())
       {
-        v8::Local<v8::Value> arr = myret->Get(Nan::New<v8::String>(prop).ToLocalChecked());
+        v8::Local<v8::Value> arr = Nan::Get(myret, Nan::New<v8::String>(prop).ToLocalChecked()).ToLocalChecked();
         if (!arr->IsArray())
         {
           v8::Local<v8::Array> a = Nan::New<v8::Array>();
-          a->Set(0, myret->Get(key));
-          myret->Set(key, a);
+          Nan::Set(a, 0, Nan::Get(myret, key).ToLocalChecked());
+          Nan::Set(myret, key, a);
           arr = a;
         }
         v8::Local<v8::Array> a = v8::Local<v8::Array>::Cast(arr);
-        a->Set(a->Length(), obj);
+        Nan::Set(a, a->Length(), obj);
       }
       else
       {
         if (options.explicitArray)
         {
           v8::Local<v8::Array> a = Nan::New<v8::Array>();
-          a->Set(0, obj);
-          myret->Set(key, a);
+          Nan::Set(a, 0, obj);
+          Nan::Set(myret, key, a);
         }
         else
         {
-          myret->Set(key, obj);
+          Nan::Set(myret, key, obj);
         }
         ++len;
       }
@@ -166,7 +166,7 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
   if (collected.length() > 0)
   {
     if (len > 0)
-      v8::Local<v8::Object>::Cast(ret)->Set(Nan::New<v8::String>(options.valueKey).ToLocalChecked(), parseText(options, collected));
+      Nan::Set(v8::Local<v8::Object>::Cast(ret), Nan::New<v8::String>(options.valueKey).ToLocalChecked(), parseText(options, collected));
     else
       ret = parseText(options, collected);
   }
@@ -207,7 +207,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
       if (!Nan::HasOwnProperty(tmp, Nan::New<v8::String>("empty_tag_value").ToLocalChecked()).FromMaybe(false))
         options.emptyTagValue = Nan::New<v8::Boolean>(true);
       else
-        options.emptyTagValue = tmp->Get(Nan::New<v8::String>("empty_tag_value").ToLocalChecked());
+        options.emptyTagValue = Nan::Get(tmp, Nan::New<v8::String>("empty_tag_value").ToLocalChecked()).ToLocalChecked();
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("value_key").ToLocalChecked()).FromMaybe(false)) {
         v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("value_key").ToLocalChecked()).ToLocalChecked();
         Utf8ValueWrapper gValueKeyObj(isolate, foo);
