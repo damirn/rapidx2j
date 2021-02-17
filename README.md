@@ -71,6 +71,8 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
  * node 10.x
  * node 11.x
  * node 12.x
+ * node 14.x
+ * node 15.x
 
 ## Contributors
 
@@ -81,7 +83,7 @@ Note that by default, rapidx2j will use 'true' as a value for empty XML tags; wi
 
 ## License & copyright
 
-Copyright (c) 2015-2019 Damir Nedžibović
+Copyright (c) 2015-2021 Damir Nedžibović
 
 Use of this software is granted under the MIT or the Boost Software License,
 to be chosen freely by the user.
