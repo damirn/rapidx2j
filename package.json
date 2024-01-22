@@ -17,8 +17,8 @@
     "package.json"
   ],
   "dependencies": {
-    "cmake-js": "^6.1.0",
-    "nan": "^2.14.2"
+    "cmake-js": "^7.3.0",
+    "nan": "^2.18.0"
   },
   "directories": {
     "test": "test"
