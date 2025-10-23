@@ -70,7 +70,18 @@ static v8::Local<v8::Value> parseText(const Options &options, const std::string 
   {
     double d = ::strtod(text.c_str(), &c);
     if (*c == '\0')
+    {
+      // If parseInteger is false, only parse values that contain decimal point or scientific notation
+      // to avoid parsing pure integers like "123" as floats
+      if (!options.parseInteger)
+      {
+        bool hasDecimalPoint = text.find('.') != std::string::npos;
+        bool hasExponent = text.find('e') != std::string::npos || text.find('E') != std::string::npos;
+        if (!hasDecimalPoint && !hasExponent)
+          return Nan::New<v8::String>(text).ToLocalChecked();
+      }
       return Nan::New<v8::Number>(d);
+    }
   }
   else if (options.parseInteger)
   {
