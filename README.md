@@ -86,7 +86,7 @@ Note that by default, rapidx2j uses `true` as the value for empty XML tags. The 
 
 ## License & copyright
 
-Copyright (c) 2015-2021 Damir Nedžibović
+Copyright (c) 2015-2025 Damir Nedžibović
 
 Use of this software is granted under the MIT or the Boost Software License,
 to be chosen freely by the user.
