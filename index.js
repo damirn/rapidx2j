@@ -6,7 +6,8 @@ const DEFAULT_OPTIONS = {
     empty_tag_value: true,
     parse_int_numbers: true,
     parse_float_numbers: true,
-    skip_parse_when_begins_with: ''
+    skip_parse_when_begins_with: '',
+    include_root: false
 };
 
 /**

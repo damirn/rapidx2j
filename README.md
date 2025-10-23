@@ -36,7 +36,8 @@ const options = {
   preserve_case: false,
   explicit_array: false,
   skip_parse_when_begins_with: '',
-  value_key: 'keyValue'
+  value_key: 'keyValue',
+  include_root: false
 };
 const json = x2j.parse(xml_string, options);
 console.log(json);
@@ -64,6 +65,8 @@ Note that by default, rapidx2j uses `true` as the value for empty XML tags. The 
 `skip_parse_when_begins_with` prevents parsing of XML values that begin with the specified string to their appropriate JavaScript types.
 
 `ignore_attr` disables parsing of all attributes.
+
+`include_root` includes the root XML element in the output. By default (`false`), the root element is stripped and only its children are returned, which differs from libraries like xml2js and fast-xml-parser. Set to `true` for compatibility with those libraries.
 
 ## Supported Node versions
 

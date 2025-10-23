@@ -19,6 +19,7 @@ struct Options {
   bool preserveCase;
   bool explicitArray;
   bool ignoreAttributes;
+  bool includeRoot;
 
   std::string attributePrefix;
   std::string beginsWith;
@@ -262,6 +263,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.ignoreAttributes = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("ignore_attr").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.ignoreAttributes = false;
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("include_root").ToLocalChecked()).FromMaybe(false))
+        options.includeRoot = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("include_root").ToLocalChecked()).ToLocalChecked()).FromJust();
+      else
+        options.includeRoot = false;
       v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("skip_parse_when_begins_with").ToLocalChecked()).ToLocalChecked();
       Utf8ValueWrapper s(isolate, foo);
       options.beginsWith = *s;
@@ -278,6 +283,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     options.preserveCase = false;
     options.explicitArray = false;
     options.ignoreAttributes = false;
+    options.includeRoot = false;
     options.attributePrefix = "@";
     options.beginsWith = "";
     options.valueKey = "keyValue";
@@ -312,7 +318,20 @@ NAN_METHOD(parse)
     if (!doc.first_node()->first_attribute() && !doc.first_node()->first_node())
       return info.GetReturnValue().Set(Nan::New<v8::Object>());
     v8::Local<v8::Value> obj = walk(options, doc.first_node());
-    info.GetReturnValue().Set(obj);
+
+    if (options.includeRoot)
+    {
+      v8::Local<v8::Object> rootObj = Nan::New<v8::Object>();
+      std::string rootName = doc.first_node()->name();
+      if (!options.preserveCase)
+        toLower(rootName);
+      Nan::Set(rootObj, Nan::New<v8::String>(rootName).ToLocalChecked(), obj);
+      info.GetReturnValue().Set(rootObj);
+    }
+    else
+    {
+      info.GetReturnValue().Set(obj);
+    }
     return;
   }
 
@@ -358,7 +377,18 @@ public:
       if (!m_doc.first_node()->first_attribute() && !m_doc.first_node()->first_node())
           val = Nan::New<v8::Object>();
       else
+      {
           val = walk(*m_options, m_doc.first_node());
+          if (m_options->includeRoot)
+          {
+            v8::Local<v8::Object> rootObj = Nan::New<v8::Object>();
+            std::string rootName = m_doc.first_node()->name();
+            if (!m_options->preserveCase)
+              toLower(rootName);
+            Nan::Set(rootObj, Nan::New<v8::String>(rootName).ToLocalChecked(), val);
+            val = rootObj;
+          }
+      }
     }
 
     v8::Local<v8::Value> argv[] =
