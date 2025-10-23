@@ -10,6 +10,7 @@
 
 struct Options {
   v8::Local<v8::Value> emptyTagValue;
+  v8::Local<v8::Value> emptyAttrValue;
 
   bool groupAttributes;
   bool parseInteger;
@@ -25,10 +26,12 @@ struct Options {
 
   void SaveToPersistent(Nan::AsyncWorker *worker) {
     worker->SaveToPersistent("emptyTagValue", emptyTagValue);
+    worker->SaveToPersistent("emptyAttrValue", emptyAttrValue);
   }
 
   void LoadFromPersistent(Nan::AsyncWorker *worker) {
     emptyTagValue = worker->GetFromPersistent("emptyTagValue");
+    emptyAttrValue = worker->GetFromPersistent("emptyAttrValue");
   }
 };
 
@@ -46,10 +49,10 @@ static void toLower(std::string &s)
   std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
 
-static v8::Local<v8::Value> parseText(const Options &options, const std::string &text)
+static v8::Local<v8::Value> parseText(const Options &options, const std::string &text, bool isAttribute = false)
 {
   if (text.find_first_not_of(" \t\n\r") == std::string::npos) // empty string
-    return Nan::Null();
+    return isAttribute ? options.emptyAttrValue : options.emptyTagValue;
 
   std::string tmp = text;
   if (!options.preserveCase)
@@ -123,7 +126,7 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
 
       if (!options.preserveCase)
         toLower(tmp);
-      Nan::Set(v8::Local<v8::Object>::Cast(attr), Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(options, trim(std::string(a->value()))));
+      Nan::Set(v8::Local<v8::Object>::Cast(attr), Nan::New<v8::String>(tmp).ToLocalChecked(), parseText(options, trim(std::string(a->value())), true));
     }
   }
 
@@ -220,6 +223,10 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.emptyTagValue = Nan::New<v8::Boolean>(true);
       else
         options.emptyTagValue = (Nan::Get(tmp, Nan::New<v8::String>("empty_tag_value").ToLocalChecked())).ToLocalChecked();
+      if (!Nan::HasOwnProperty(tmp, Nan::New<v8::String>("empty_attr_value").ToLocalChecked()).FromMaybe(false))
+        options.emptyAttrValue = Nan::Null();
+      else
+        options.emptyAttrValue = (Nan::Get(tmp, Nan::New<v8::String>("empty_attr_value").ToLocalChecked())).ToLocalChecked();
       if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("value_key").ToLocalChecked()).FromMaybe(false)) {
         v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("value_key").ToLocalChecked()).ToLocalChecked();
         Utf8ValueWrapper gValueKeyObj(isolate, foo);
@@ -263,6 +270,7 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
   else
   {
     options.emptyTagValue = Nan::New<v8::Boolean>(true);
+    options.emptyAttrValue = Nan::Null();
     options.groupAttributes = false;
     options.parseBoolean = true;
     options.parseDouble = true;
