@@ -71,7 +71,7 @@ Note that by default, rapidx2j uses `true` as the value for empty XML tags. The 
 ## Supported Node versions
 
  * Node.js 16.x
- * Node.js 18.x (LTS)
+ * Node.js 18.x
  * Node.js 20.x (LTS)
  * Node.js 22.x (LTS)
 
