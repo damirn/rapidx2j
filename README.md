@@ -1,6 +1,7 @@
 # rapidx2j
 
 [![Build Status](https://travis-ci.org/damirn/rapidx2j.svg?branch=master)](https://travis-ci.org/damirn/rapidx2j)
+[![CI](https://github.com/damirn/rapidx2j/actions/workflows/ci.yml/badge.svg)](https://github.com/damirn/rapidx2j/actions/workflows/ci.yml)
 
 A Node.js module for converting XML documents into JSON objects. It is one of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/). Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
