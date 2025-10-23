@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/damirn/rapidx2j.svg?branch=master)](https://travis-ci.org/damirn/rapidx2j)
 
-Node.JS module for converting XML documents into JSON objects. It is one
-of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/).
-Inspired by [fast-feed](https://github.com/rla/fast-feed).
+A Node.js module for converting XML documents into JSON objects. It is one of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/). Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
 ## Installation
 
@@ -31,6 +29,7 @@ const options = {
   attr_prefix: '@',
   ignore_attr: false,
   empty_tag_value: null,
+  empty_attr_value: null,
   parse_boolean_values: true,
   parse_int_numbers: true,
   parse_float_numbers: true,
@@ -54,12 +53,17 @@ const json = x2j.parse(xml_string, (err, json) => {
 });
 ```
 
-Note that by default, rapidx2j will use 'true' as a value for empty XML tags; with config param 'empty_tag_value' one can set that to something else
-(i.e. to 'null' in this case).
-'parse_boolean_values', 'parse_int_numbers' and 'parse_float_numbers' will or will not parse XML values which are bool/int/float numbers to appropriate java script types.
-'preserve_case' will or will not preserve XML tag and attribute name case.
-'skip_parse_when_begins_with' will not parse XML values which begin with a given string to appropriate javascript types.
-'ignore_attr' will not parse any attributes.
+Note that by default, rapidx2j uses `true` as the value for empty XML tags. The `empty_tag_value` config parameter allows you to set this to something else (e.g., `null`).
+
+`empty_attr_value` sets the value for empty XML attributes (default is `null`). This is independent of `empty_tag_value` and allows you to customize how empty attributes like `<tag attr="">` are parsed (e.g., empty string, false, or any custom value).
+
+`parse_boolean_values`, `parse_int_numbers`, and `parse_float_numbers` control whether XML values are parsed as booleans, integers, or floats to their appropriate JavaScript types.
+
+`preserve_case` controls whether XML tag and attribute name case is preserved.
+
+`skip_parse_when_begins_with` prevents parsing of XML values that begin with the specified string to their appropriate JavaScript types.
+
+`ignore_attr` disables parsing of all attributes.
 
 ## Supported Node versions
 
