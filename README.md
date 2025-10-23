@@ -1,6 +1,5 @@
 # rapidx2j
 
-[![Build Status](https://travis-ci.org/damirn/rapidx2j.svg?branch=master)](https://travis-ci.org/damirn/rapidx2j)
 [![CI](https://github.com/damirn/rapidx2j/actions/workflows/ci.yml/badge.svg)](https://github.com/damirn/rapidx2j/actions/workflows/ci.yml)
 
 A Node.js module for converting XML documents into JSON objects. It is one of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/). Inspired by [fast-feed](https://github.com/rla/fast-feed).
@@ -71,16 +70,12 @@ Note that by default, rapidx2j uses `true` as the value for empty XML tags. The 
 
 ## Supported Node versions
 
- * node 4.x
- * node 5.x
- * node 6.x
- * node 8.x
- * node 9.x
- * node 10.x
- * node 11.x
- * node 12.x
- * node 14.x
- * node 15.x
+ * Node.js 16.x
+ * Node.js 18.x (LTS)
+ * Node.js 20.x (LTS)
+ * Node.js 22.x (LTS)
+
+**Note:** The library may work on earlier Node.js versions (4.x - 15.x), but these are no longer tested in CI.
 
 ## Contributors
 
