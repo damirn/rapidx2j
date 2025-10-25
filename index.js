@@ -82,3 +82,23 @@ module.exports.parse = function () {
     // Sync
     return native.parse(xml, options);
 };
+
+/**
+ * Parse XML asynchronously and return a Promise
+ *
+ * @param {string|Buffer} xml - The XML to parse.
+ * @param {object} [options] - Change default options (optional).
+ *
+ * @returns {Promise<object>}
+ */
+module.exports.parseAsync = function (xml, options = {}) {
+    return new Promise((resolve, reject) => {
+        module.exports.parse(xml, options, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};

@@ -99,7 +99,7 @@ describe('explicit_object', () => {
         });
     });
 
-    it.skip('should work with parseAsync', async () => {
+    it('should work with parseAsync', async () => {
         const xml = '<root><item>promise text</item></root>';
         const json = await rapidx2j.parseAsync(xml, { explicit_object: true });
         assert.strictEqual(typeof json.item, 'object');

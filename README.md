@@ -55,6 +55,30 @@ const json = x2j.parse(xml_string, (err, json) => {
 });
 ```
 
+#### Async with Promise/await
+
+```javascript
+const x2j = require('rapidx2j');
+
+// Basic usage
+const json = await x2j.parseAsync(xml_string);
+console.log(json);
+
+// With options
+const json = await x2j.parseAsync(xml_string, options);
+console.log(json);
+
+// Error handling
+try {
+  const json = await x2j.parseAsync(xml_string);
+  console.log(json);
+} catch (error) {
+  console.error('Parse error:', error);
+}
+```
+
+## Configuration Options
+
 Note that by default, rapidx2j uses `true` as the value for empty XML tags. The `empty_tag_value` config parameter allows you to set this to something else (e.g., `null`).
 
 `empty_attr_value` sets the value for empty XML attributes (default is `null`). This is independent of `empty_tag_value` and allows you to customize how empty attributes like `<tag attr="">` are parsed (e.g., empty string, false, or any custom value).
