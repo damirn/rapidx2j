@@ -406,7 +406,17 @@ public:
       Nan::Null(),
       val
     };
-    Nan::Call(callback->GetFunction(), Nan::GetCurrentContext()->Global(), 2, argv);
+    Nan::Call(*callback, 2, argv);
+  }
+
+  virtual void HandleErrorCallback()
+  {
+    Nan::HandleScope scope;
+    v8::Local<v8::Value> argv[] =
+    {
+      Nan::Error(ErrorMessage())
+    };
+    Nan::Call(*callback, 1, argv);
   }
 
 private:
