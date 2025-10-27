@@ -406,9 +406,7 @@ public:
       Nan::Null(),
       val
     };
-    v8::Local<v8::Function> callbackFn = callback->GetFunction();
-    v8::MaybeLocal<v8::Value> result = callbackFn->Call(Nan::GetCurrentContext(), Nan::GetCurrentContext()->Global(), 2, argv);
-    (void)result; // Suppress unused variable warning
+    callback->Call(2, argv, async_resource);
   }
 
   virtual void HandleErrorCallback()
@@ -418,9 +416,7 @@ public:
     {
       Nan::Error(ErrorMessage())
     };
-    v8::Local<v8::Function> callbackFn = callback->GetFunction();
-    v8::MaybeLocal<v8::Value> result = callbackFn->Call(Nan::GetCurrentContext(), Nan::GetCurrentContext()->Global(), 1, argv);
-    (void)result; // Suppress unused variable warning
+    callback->Call(1, argv, async_resource);
   }
 
 private:
