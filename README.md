@@ -140,12 +140,13 @@ macOS on Apple M3 Pro, Node.js v26.0.0, 5 warmup runs + 50 timed iterations per 
 
 ## Supported Node versions
 
- * Node.js 16.x
  * Node.js 18.x
- * Node.js 20.x (LTS)
+ * Node.js 20.x
  * Node.js 22.x (LTS)
+ * Node.js 24.x (LTS)
+ * Node.js 26.x
 
-**Note:** The library may work on earlier Node.js versions (4.x - 15.x), but these are no longer tested in CI.
+**Note:** Node 16 and earlier are no longer supported because `node-gyp@12+` (required for Node 26) needs Node 18+ APIs.
 
 ## Contributors
 
