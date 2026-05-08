@@ -1,0 +1,15 @@
+{
+  "name": "rapidx2j-benchmark",
+  "version": "1.0.0",
+  "description": "Performance benchmark for rapidx2j vs other XML parsers",
+  "private": true,
+  "scripts": {
+    "bench": "node index.js",
+    "bench:markdown": "node index.js --markdown"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.5.0",
+    "xml2js": "^0.6.2",
+    "xml-js": "^1.6.11"
+  }
+}

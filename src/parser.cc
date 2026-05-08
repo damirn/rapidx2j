@@ -48,7 +48,8 @@ static std::string trim(const std::string &s)
 
 static void toLower(std::string &s)
 {
-  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+  std::transform(s.begin(), s.end(), s.begin(),
+                 [](char c) { return static_cast<char>(::tolower(static_cast<unsigned char>(c))); });
 }
 
 static v8::Local<v8::Value> parseText(const Options &options, const std::string &text, bool isAttribute = false)
@@ -67,7 +68,7 @@ static v8::Local<v8::Value> parseText(const Options &options, const std::string 
       return Nan::New<v8::Boolean>(false);
   }
 
-  if (options.beginsWith.length() > 0 && text.find_first_of(options.beginsWith) == 0)
+  if (options.beginsWith.length() > 0 && text.compare(0, options.beginsWith.length(), options.beginsWith) == 0)
     return Nan::New<v8::String>(text).ToLocalChecked();
 
   char *c = const_cast<char *>(text.c_str());
@@ -90,6 +91,7 @@ static v8::Local<v8::Value> parseText(const Options &options, const std::string 
   }
   else if (options.parseInteger)
   {
+    errno = 0;
     long l = ::strtol(text.c_str(), &c, 10);
     if (!(text.c_str() == c || *c != '\0' || ((l == LONG_MIN || l == LONG_MAX) && errno == ERANGE)))
       return Nan::New<v8::Number>(l);
@@ -136,9 +138,9 @@ static v8::Local<v8::Value> walk(const Options &options, const rapidxml::xml_nod
   {
     const rapidxml::node_type t = n->type();
     if (t == rapidxml::node_data)
-      collected += trim(std::string(node->value()));
+      collected += trim(std::string(n->value()));
     else if (t == rapidxml::node_cdata)
-      collected += std::string(node->first_node()->value());
+      collected += std::string(n->value());
     else if (t == rapidxml::node_element)
     {
       if (len == 0)
@@ -202,13 +204,13 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
     Nan::ThrowError("Wrong number of arguments");
     return false;
   }
+  if (!args[0]->IsString() && !args[0]->IsObject())
+  {
+    Nan::ThrowError("Wrong argument; expected String or Buffer");
+    return false;
+  }
   if (args.Length() >= 2)
   {
-    if (!args[0]->IsString() && !args[0]->IsObject())
-    {
-      Nan::ThrowError("Wrong argument; expected String or Buffer");
-      return false;
-    }
     if (!args[1]->IsObject())
     {
       Nan::ThrowError("Wrong argument; expected Object");
@@ -276,9 +278,13 @@ static bool parseArgs(const Nan::FunctionCallbackInfo<v8::Value> &args, Options 
         options.includeRoot = Nan::To<bool>(Nan::Get(tmp, Nan::New<v8::String>("include_root").ToLocalChecked()).ToLocalChecked()).FromJust();
       else
         options.includeRoot = false;
-      v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("skip_parse_when_begins_with").ToLocalChecked()).ToLocalChecked();
-      Utf8ValueWrapper s(isolate, foo);
-      options.beginsWith = *s;
+      if (Nan::HasOwnProperty(tmp, Nan::New<v8::String>("skip_parse_when_begins_with").ToLocalChecked()).FromMaybe(false)) {
+        v8::Local<v8::Value> foo = Nan::Get(tmp, Nan::New("skip_parse_when_begins_with").ToLocalChecked()).ToLocalChecked();
+        Utf8ValueWrapper s(isolate, foo);
+        options.beginsWith = *s;
+      }
+      else
+        options.beginsWith = "";
     }
   }
   else
