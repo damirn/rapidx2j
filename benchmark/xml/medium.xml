@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<store>
+  <products>
+    <product id="1" category="electronics" inStock="true">
+      <name>Laptop</name>
+      <brand>TechCorp</brand>
+      <price currency="USD">999.99</price>
+      <specs>
+        <processor>Intel i7</processor>
+        <ram>16GB</ram>
+        <storage>512GB SSD</storage>
+        <display>15.6 inch</display>
+      </specs>
+      <reviews>
+        <review rating="5">
+          <author>John Doe</author>
+          <date>2024-01-15</date>
+          <comment>Excellent performance and build quality!</comment>
+        </review>
+        <review rating="4">
+          <author>Jane Smith</author>
+          <date>2024-01-20</date>
+          <comment>Great laptop, but battery life could be better.</comment>
+        </review>
+      </reviews>
+    </product>
+    <product id="2" category="electronics" inStock="true">
+      <name>Smartphone</name>
+      <brand>PhoneMax</brand>
+      <price currency="USD">699.99</price>
+      <specs>
+        <processor>Snapdragon 888</processor>
+        <ram>8GB</ram>
+        <storage>256GB</storage>
+        <display>6.5 inch OLED</display>
+      </specs>
+      <reviews>
+        <review rating="5">
+          <author>Alice Johnson</author>
+          <date>2024-02-01</date>
+          <comment>Best phone I've ever owned!</comment>
+        </review>
+        <review rating="5">
+          <author>Bob Williams</author>
+          <date>2024-02-05</date>
+          <comment>Camera quality is amazing.</comment>
+        </review>
+        <review rating="4">
+          <author>Carol Brown</author>
+          <date>2024-02-10</date>
+          <comment>Very fast, but a bit expensive.</comment>
+        </review>
+      </reviews>
+    </product>
+    <product id="3" category="home" inStock="false">
+      <name>Smart Speaker</name>
+      <brand>AudioTech</brand>
+      <price currency="USD">149.99</price>
+      <specs>
+        <connectivity>WiFi, Bluetooth</connectivity>
+        <voice_assistant>Yes</voice_assistant>
+        <power>AC adapter</power>
+      </specs>
+      <reviews>
+        <review rating="4">
+          <author>David Lee</author>
+          <date>2024-01-25</date>
+          <comment>Good sound quality for the price.</comment>
+        </review>
+      </reviews>
+    </product>
+    <product id="4" category="clothing" inStock="true">
+      <name>Winter Jacket</name>
+      <brand>OutdoorWear</brand>
+      <price currency="USD">199.99</price>
+      <specs>
+        <material>Synthetic</material>
+        <waterproof>true</waterproof>
+        <sizes>
+          <size available="true">S</size>
+          <size available="true">M</size>
+          <size available="true">L</size>
+          <size available="false">XL</size>
+        </sizes>
+      </specs>
+      <reviews>
+        <review rating="5">
+          <author>Emma Davis</author>
+          <date>2024-01-30</date>
+          <comment>Keeps me warm in harsh winter conditions!</comment>
+        </review>
+        <review rating="5">
+          <author>Frank Miller</author>
+          <date>2024-02-08</date>
+          <comment>Excellent quality and fit.</comment>
+        </review>
+      </reviews>
+    </product>
+    <product id="5" category="books" inStock="true">
+      <name>JavaScript: The Complete Guide</name>
+      <brand>TechBooks</brand>
+      <price currency="USD">49.99</price>
+      <specs>
+        <pages>800</pages>
+        <format>Hardcover</format>
+        <language>English</language>
+        <isbn>978-1234567890</isbn>
+      </specs>
+      <reviews>
+        <review rating="5">
+          <author>George Wilson</author>
+          <date>2024-02-12</date>
+          <comment>Comprehensive and well-written!</comment>
+        </review>
+        <review rating="4">
+          <author>Helen Taylor</author>
+          <date>2024-02-15</date>
+          <comment>Very detailed, though some parts are advanced.</comment>
+        </review>
+        <review rating="5">
+          <author>Ivan Martinez</author>
+          <date>2024-02-18</date>
+          <comment>Best JS book I've read.</comment>
+        </review>
+      </reviews>
+    </product>
+  </products>
+  <customers>
+    <customer id="c001" memberSince="2020-01-01">
+      <name>John Doe</name>
+      <email>john.doe@example.com</email>
+      <address>
+        <street>123 Main St</street>
+        <city>New York</city>
+        <state>NY</state>
+        <zip>10001</zip>
+        <country>USA</country>
+      </address>
+      <orders>
+        <order id="o001" date="2024-01-15">
+          <product_id>1</product_id>
+          <quantity>1</quantity>
+          <total>999.99</total>
+        </order>
+      </orders>
+    </customer>
+    <customer id="c002" memberSince="2019-06-15">
+      <name>Jane Smith</name>
+      <email>jane.smith@example.com</email>
+      <address>
+        <street>456 Oak Ave</street>
+        <city>Los Angeles</city>
+        <state>CA</state>
+        <zip>90001</zip>
+        <country>USA</country>
+      </address>
+      <orders>
+        <order id="o002" date="2024-01-20">
+          <product_id>1</product_id>
+          <quantity>1</quantity>
+          <total>999.99</total>
+        </order>
+        <order id="o003" date="2024-02-01">
+          <product_id>2</product_id>
+          <quantity>1</quantity>
+          <total>699.99</total>
+        </order>
+      </orders>
+    </customer>
+  </customers>
+</store>

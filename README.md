@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/damirn/rapidx2j/actions/workflows/ci.yml/badge.svg)](https://github.com/damirn/rapidx2j/actions/workflows/ci.yml)
 
-A Node.js module for converting XML documents into JSON objects. It is one of the fastest converters available. Uses [RapidXML](http://rapidxml.sourceforge.net/). Inspired by [fast-feed](https://github.com/rla/fast-feed).
+A Node.js module for converting XML documents into JSON objects. Uses [RapidXML](http://rapidxml.sourceforge.net/). Inspired by [fast-feed](https://github.com/rla/fast-feed).
 
 ## Installation
 
@@ -94,6 +94,49 @@ Note that by default, rapidx2j uses `true` as the value for empty XML tags. The 
 `explicit_object` ensures that text-only elements are always returned as objects with the text value stored in the `value_key` property (default: `keyValue`). By default (`false`), text-only elements are returned as strings, while elements with attributes are returned as objects. Setting this to `true` provides consistent object structure across all elements.
 
 `include_root` includes the root XML element in the output. By default (`false`), the root element is stripped and only its children are returned, which differs from libraries like xml2js and fast-xml-parser. Set to `true` for compatibility with those libraries.
+
+## Benchmark
+
+The `benchmark` directory contains a script comparing rapidx2j against `fast-xml-parser`, `xml2js`, and `xml-js` on a few XML inputs. Results depend on the input, hardware, and Node version; run it yourself to get numbers for your environment:
+
+```bash
+cd benchmark
+npm install
+npm run bench
+```
+
+See [benchmark/README.md](benchmark/README.md) for methodology and the parsers that were excluded.
+
+### Sample numbers
+
+macOS on Apple M3 Pro, Node.js v26.0.0, 5 warmup runs + 50 timed iterations per parser:
+
+**small.xml (~1 KB)**
+
+| Rank | Parser | Avg (ms) | Min (ms) | Max (ms) | vs Fastest |
+|------|--------|----------|----------|----------|------------|
+| 1 | **rapidx2j** | 0.01 | 0.01 | 0.02 | 1.00x (baseline) |
+| 2 | **fast-xml-parser** | 0.07 | 0.03 | 0.73 | 6.08x slower |
+| 3 | **xml2js** | 0.07 | 0.04 | 0.21 | 6.48x slower |
+| 4 | **xml-js** | 0.09 | 0.03 | 0.50 | 8.18x slower |
+
+**medium.xml (~5 KB)**
+
+| Rank | Parser | Avg (ms) | Min (ms) | Max (ms) | vs Fastest |
+|------|--------|----------|----------|----------|------------|
+| 1 | **rapidx2j** | 0.06 | 0.06 | 0.15 | 1.00x (baseline) |
+| 2 | **xml-js** | 0.17 | 0.16 | 0.29 | 2.67x slower |
+| 3 | **fast-xml-parser** | 0.22 | 0.18 | 0.71 | 3.44x slower |
+| 4 | **xml2js** | 0.24 | 0.20 | 0.47 | 3.85x slower |
+
+**soccer.xml (~1.9 MB)**
+
+| Rank | Parser | Avg (ms) | Min (ms) | Max (ms) | vs Fastest |
+|------|--------|----------|----------|----------|------------|
+| 1 | **rapidx2j** | 25.78 | 24.45 | 29.05 | 1.00x (baseline) |
+| 2 | **xml-js** | 42.92 | 40.19 | 49.30 | 1.66x slower |
+| 3 | **fast-xml-parser** | 57.36 | 55.55 | 60.92 | 2.22x slower |
+| 4 | **xml2js** | 71.29 | 69.49 | 74.58 | 2.76x slower |
 
 ## Supported Node versions
 
