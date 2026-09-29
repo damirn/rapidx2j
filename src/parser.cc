@@ -319,10 +319,7 @@ NAN_METHOD(parse)
 
   v8::Local<v8::String> xmlString;
   if (!Nan::To<v8::String>(info[0]).ToLocal(&xmlString))
-  {
-    info.GetReturnValue().SetUndefined();
-    return;
-  }
+    return; // conversion threw; let the pending exception propagate
   Nan::Utf8String xml(xmlString);
   rapidxml::xml_document<char> doc;
   try
@@ -461,10 +458,7 @@ NAN_METHOD(parseAsync)
   }
   v8::Local<v8::String> xmlString;
   if (!Nan::To<v8::String>(info[0]).ToLocal(&xmlString))
-  {
-    info.GetReturnValue().SetUndefined();
-    return;
-  }
+    return; // conversion threw; let the pending exception propagate
   Nan::Utf8String *xml = new Nan::Utf8String(xmlString);
   Nan::Callback *cb = new Nan::Callback(info[2].As<v8::Function>());
   Nan::AsyncQueueWorker(new AsyncParser(cb, xml, std::move(options)));

@@ -32,9 +32,7 @@ module.exports.parse = function () {
     const args = Array.prototype.slice.call(arguments, 0);
 
     // xml argument should be string or buffer
-    if (typeof args[0] === 'string' ||
-        (isObject(args[0]) && args[0].constructor && args[0].constructor.name === 'Buffer')
-    ) {
+    if (typeof args[0] === 'string' || Buffer.isBuffer(args[0])) {
         xml = args.shift();
     } else {
         throw new Error('XML needs to be a string or a buffer.');
