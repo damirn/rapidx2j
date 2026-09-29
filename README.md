@@ -140,13 +140,15 @@ macOS on Apple M3 Pro, Node.js v26.0.0, 5 warmup runs + 50 timed iterations per 
 
 ## Supported Node versions
 
- * Node.js 18.x
+ * Node.js 18.x (best effort, see below)
  * Node.js 20.x
  * Node.js 22.x (LTS)
  * Node.js 24.x (LTS)
  * Node.js 26.x
 
 **Note:** Node 16 and earlier are no longer supported because `node-gyp@12+` (required for Node 26) needs Node 18+ APIs.
+
+**Node 18:** Node 18 is end-of-life and `node-gyp@12` officially requires Node 20.17+, so `npm install` on Node 18 prints an `EBADENGINE` warning. The package still builds and works on Node 18 and CI tests it, but support is best effort and may be dropped in a future major release.
 
 ## Contributors
 
